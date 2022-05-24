@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="dist/jspsych.js"></script>
+    <script src="dist/plugin-video-keyboard-response.js"></script>
+    <script src="dist/plugin-html-button-response.js"></script>
+    <script src="/dist/plugin-html-keyboard-response.js"></script>
+    <script src="dist/plugin-preload.js"></script>
+    <link rel="stylesheet" href="dist/jspsych.css">
+  </head>
+  <body></body>
+  <script>
+
+    // preloading videos only works when the file is running on a server
+    // if you run this experiment by opening the file directly in the browser, 
+    // then video preloading will be disabled to prevent CORS errors
+    var fullscreen = {
+      type: jsPsychFullscreen,
+      fullscreen_mode: true
+    };
+
+    var Hello = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: '<div style="max-width:600px;"><p>Bonjour ! bla bla bla.</p></div>',
+      choices: ['continue']
+    };
+
+    var Presentation = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: ['video/sample_video.mp4'],
+      choices: "ALL_KEYS",
+      prompt: '<p>When the video stops, press any key to end the trial.</p><p>Responses that are made before the video ends will be ignored.</p>',
+      width: 600,
+      autoplay: true,
+      response_ends_trial: true,
+      response_allowed_while_playing: false
+    };
+
+
+    var Experiment = {
+      type: 'html-keyboard-response',
+      stimulus: function() {
+        if(sequence.length < how_many_back){
+          var letter = jsPsych.randomization.sampleWithoutReplacement(n_back_set, 1)[0]
+        } else {
+          if(jsPsych.timelineVariable('match', true) == true){
+            var letter = sequence[sequence.length - how_many_back];
+          } else {
+            var possible_letters = jsPsych.randomization.sampleWithoutReplacement(n_back_set, 2);
+            if(possible_letters[0] != sequence[sequence.length - how_many_back]){
+              var letter = possible_letters[0];
+            } else {
+              var letter = possible_letters[1];
+            }
+          }
+        }
+        sequence.push(letter);
+        return '<span style="font-size: 96px;">'+letter+'</span>'
+      },
+      choices: ['M'],
+      trial_duration: 1500,
+      response_ends_trial: false,
+      post_trial_gap: 500,
+      data: {
+        phase: 'test',
+        match: jsPsych.timelineVariable('match')
+      },
+      on_finish: function(data){
+        if(data.match == true){
+          data.correct = (data.key_press != null)
+        }
+        if(data.match == false){
+          data.correct = (data.key_press === null)
+        }
+      }
+    }
+
+    var n_back_trials = [
+      {match: true},
+      {match: false}
+    ]
+
+    var n_back_sequence = {
+      timeline: [n_back_trial],
+      timeline_variables: n_back_trials,
+      sample: {
+        type: 'with-replacement',
+        size: sequence_length,
+        weights: [1, 2]
+      }
+    }
+
+
+
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    jsPsych.run([fullscreen_trial,]);
+   
+  </script>
+</html>
