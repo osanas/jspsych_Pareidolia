@@ -22,7 +22,7 @@
   <script>
 
     // preloading videos only works when the file is running on a server
-    // if you run this experiment by opening the file directly in the browser, 
+    // if you run this experiment by opening the file directly in the browser,
     // then video preloading will be disabled to prevent CORS errors
     var fullscreen = {
       type: jsPsychFullscreen,
@@ -61,7 +61,7 @@
       choices: ['Click to begin'],
       post_trial_gap: 1000
     };
-    
+
     var calibration = {
       type: jsPsychWebgazerCalibrate,
       calibration_points: [[50,50], [25,25], [25,75], [75,25], [75,75]],
@@ -108,7 +108,7 @@
         }
       }
     };
-    
+
     var Experiment = {
       type: 'html-keyboard-response',
       stimulus: function() {
@@ -126,9 +126,7 @@
       questions: [
         {prompt: 'Word 1', columns: 3, required: false, name: 'word1'},
         {prompt: 'Word 2', columns: 3, required: false, name: 'word2'},
-        {prompt: 'Word 3', columns: 3, required: false, name: 'word3'},
-        {prompt: 'Word 4', columns: 3, required: false, name: 'word4'},
-        {prompt: 'Word 5', columns: 3, required: false, name: 'word5'}
+        {prompt: 'Word 3', columns: 3, required: false, name: 'word3'}
       ],
       randomize_question_order: false
     };
@@ -141,6 +139,37 @@
       }
     }
 
+    var DAT_instructions = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `
+        <p>Please enter 10 words that are as different from each other as possible, in all meanings and uses of the words.</p>
+        <p>RULES:</p>
+        <p>1. Only single words in English.</p>
+        <p>2. Only nouns (e.g., things, objects, concepts).</p>
+        <p>3. No proper nouns (e.g., no specific people or places).</p>
+        <p>4. No specialised vocabulary (e.g., no technical terms).</p>
+        <p>5. Think of the words on your own (e.g., do not just look at objects in your surroundings).</p>
+        `,
+      choices: ['Click to begin'],
+      post_trial_gap: 1000
+    };
+
+    var DAT_test = {
+      type: jsPsychSurveyText,
+      questions: [
+        {prompt: 'Word 1', columns: 3, required: true, name: 'word1'},
+        {prompt: 'Word 2', columns: 3, required: true, name: 'word2'},
+        {prompt: 'Word 3', columns: 3, required: true, name: 'word3'},
+        {prompt: 'Word 4', columns: 3, required: true, name: 'word4'},
+        {prompt: 'Word 5', columns: 3, required: true, name: 'word5'},
+        {prompt: 'Word 6', columns: 3, required: true, name: 'word6'},
+        {prompt: 'Word 7', columns: 3, required: true, name: 'word7'},
+        {prompt: 'Word 8', columns: 3, required: true, name: 'word8'},
+        {prompt: 'Word 9', columns: 3, required: true, name: 'word9'},
+        {prompt: 'Word 10', columns: 3, required: true, name: 'word10'}
+      ],
+      randomize_question_order: false
+    };
 
     var jsPsych = initJsPsych({
       on_finish: function() {
@@ -158,8 +187,10 @@
     timeline.push(validation_instructions);
     timeline.push(validation);
     timeline.push(n_back_sequence);
+    timeline.push(DAT_instructions);
+    timeline.push(DAT_test);
     timeline.push(done);
     jsPsych.run(timeline);
-   
+
   </script>
 </html>
