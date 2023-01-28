@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+
+<body>
+    <script>
+        // Data: 2D coordinates, labels, and FD values of words
+        var wordsData = [
+            { label: "face", x: 1000, y: 100, size: 500, FD: 2 },
+            { label: "animals", x: 40, y: 10, size: 1000, FD: 4 },
+            { label: "word3", x: 600, y: 100, size: 705, FD: 3 },
+            { label: "animals", x: 40, y: 10, size: 1000, FD: 2 },
+            { label: "word3", x: 600, y: 100, size: 705, FD: 3 },
+            { label: "word4", x: 1600, y: 1800, size: 2605, FD: 4 },
+            { label: "word5", x: 1400, y: 700, size: 3705, FD: 5 },
+            { label: "word6", x: 200, y: 300, size: 305, FD: 5 },
+            { label: "word7", x: 600, y: 100, size: 1705, FD: 4 },
+            { label: "word8", x: 600, y: 100, size: 705, FD: 3 },
+            { label: "word9", x: 600, y: 100, size: 705, FD: 2 },
+            { label: "word10", x: 600, y: 100, size: 4705, FD: 1 },
+            { label: "word11", x: 900, y: 100, size: 705, FD: 2 },
+            { label: "word12", x: 500, y: 900, size: 705, FD: 3 },
+            { label: "word13", x: 400, y: 800, size: 705, FD: 4 },
+            { label: "word14", x: 300, y: 600, size: 705, FD: 5 },
+            { label: "word15", x: 240, y: 300, size: 705, FD: 5 },
+            { label: "word16", x: 600, y: 100, size: 705, FD: 4 },
+            { label: "word17", x: 600, y: 100, size: 705, FD: 3 },
+            { label: "word18", x: 1000, y: 1000, size: 705, FD: 2 },
+            { label: "word19", x: 1600, y: 1200, size: 705, FD: 1 },
+            { label: "word20", x: 1300, y: 300, size: 705, FD: 2 },
+            { label: "word21", x: 1103, y: 1200, size: 800, FD: 1 },
+            { label: "word22", x: 100, y: 500, size: 600, FD: 5 }
+        ];
+
+        // Import data from CSV file
+        // d3.json("words_data.json", function (data) {
+        //     if (error) throw error;
+        //     data.forEach(function (d) {
+        //         wordsData.push({
+        //             label: d.label,
+        //             x: +d.x,
+        //             y: +d.y,
+        //             size: +d.size,
+        //             FD: +d.FD
+        //         });
+        //     });
+
+        // Scaling factor for word size
+        var scalingFactor = 25;
+
+        // Transparency level
+        var transparency = 0.2;
+
+        // SVG dimensions
+        var width = "1800", height = '1800';
+
+        // Create SVG element
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Create scatter plot
+        svg.selectAll("g")
+            .data(wordsData)
+            .enter()
+            .append("g")
+            .append("circle")
+            .attr("cx", function (d) { return d.x; })
+            .attr("cy", function (d) { return d.y; })
+            .attr("r", function (d) { return d.size / scalingFactor; })
+            .style("font-size", function (d) { return d.size / scalingFactor + "px"; })
+
+            .style("fill", function (d) {
+                // Map FD value to color
+                var color = d3.scaleLinear()
+                    .domain([1, 5])
+                    .range(["blue", "red"])
+                    .interpolate(d3.interpolateHcl);
+                return color(d.FD);
+            })
+            .style("fill-opacity", transparency);
+
+        svg.selectAll("g")
+            .append("text")
+            .text(function (d) { return d.label; })
+            .attr("x", function (d) { return d.x; })
+            .attr("y", function (d) { return d.y; })
+            .attr("text-anchor", "middle")
+            .style("fill", "black")
+            .style("font-size", "13px");
+        ;
+    </script>
+</body>
+
+</html>
