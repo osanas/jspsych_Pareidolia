@@ -47,9 +47,10 @@
     }
   }
 
-  const ageVal = null;
-  const nationalityVal = null;
-  const selectedLanguage = null;
+  let ageVal = null;
+  let nationalityVal = null;
+  let selectedLanguage = null;
+
 
   const fd12Images = getRandomImagesFromFolder('12', 10);
   const fd14Images = getRandomImagesFromFolder('14', 10);
@@ -85,6 +86,7 @@
     `,
     choices: ['x']
   };
+
 
   var demographic_questions = {
     type: jsPsychHtmlButtonResponse,
@@ -157,16 +159,34 @@
     stimulus: `
         <p>This experiment uses your camera for eye tracking.</p>
         <p>In order to participate you must allow the experiment to use your camera.</p>
-        <p>You will be prompted to do this on the next screen.</p>
-        <p>If you do not want to permit the experiment to use your camera, please close the page.</p>
+        <p>The camera will only track the motions of your eyes and no image will be recorded.</p>
+        <p>If you do not want to permit the experiment to use your camera, please click "No". Otherwise, click "Yes".</p>
       `,
-    choices: ['Click to begin'],
-    post_trial_gap: 1000
+    choices: ['Yes', 'No'],
+    post_trial_gap: 1000,
+    on_finish: function () {
+      if (shouldIncludeEyeTracking()) {
+        timeline.push(init_camera);
+        timeline.push(calibration_instructions);
+        timeline.push(calibration);
+        timeline.push(validation_instructions);
+        timeline.push(validation);
+      }
+    }
   };
 
   var init_camera = {
     type: jsPsychWebgazerInitCamera
   };
+
+  function shouldIncludeEyeTracking() {
+    var lastTrialData = jsPsych.data.get().filter({ type: 'jsPsychHtmlButtonResponse' }).last().values();
+    if (lastTrialData.length > 0 && lastTrialData[0].hasOwnProperty('button_pressed')) {
+      return lastTrialData[0].button_pressed == "0"; // "0" corresponds to the "Yes" button
+    }
+    return false;
+  }
+
 
   var calibration_instructions = {
     type: jsPsychHtmlButtonResponse,
@@ -308,16 +328,16 @@
   };
 
   // API
- 
+
   function post_sample_data(data) {
     const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  };
-  const url = 'api_post_data.php';
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    };
+    const url = 'api_post_data.php';
     fetch(url, requestOptions)
       .then(response => response.json())
       .then(data => {
@@ -346,20 +366,19 @@
   });
   var timeline = [];
 
+  timeline.push(research_info);
+  timeline.push(demographic_questions);
   timeline.push(camera_instructions);
-  timeline.push(init_camera);
-  timeline.push(calibration_instructions);
-  timeline.push(calibration);
-  timeline.push(validation_instructions);
-  timeline.push(validation);
+  // The eye tracking trials will be conditionally added to the timeline in the on_finish callback of camera_instructions.
 
+  timeline.push(pareidolia_instructions);
   timeline.push(n_back_sequence);
-
-  // Second task
-  // timeline.push(DAT_instructions);
-  // timeline.push(DAT_test);
+  timeline.push(DAT_instructions);
+  timeline.push(DAT_test);
   timeline.push(done);
+
   jsPsych.run(timeline);
+
 
 </script>
 
