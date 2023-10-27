@@ -1,10 +1,10 @@
 <?php
 
-$name = $_POST['name'];
+$data = $_POST['data'];
 $location = $_POST['location'];
 $myFile = "test.txt";
 $fh = fopen($myFile, 'w') or die("can't open file");
-fwrite($fh, $name);
+fwrite($fh, $data);
 fwrite($fh, $location);
 fclose($fh);
 

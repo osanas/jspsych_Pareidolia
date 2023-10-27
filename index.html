@@ -30,6 +30,96 @@
     fullscreen_mode: true
   };
 
+  var research_info = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width:900px; font-size: 16px; line-height: 1.5;">
+        <p style="margin-bottom: 20px;">Welcome to this research!</p>
+        
+        <p style="margin-bottom: 20px;">By participating, you agree to the following:</p>
+        
+        <ul style="margin-bottom: 20px;">
+          <li style="margin-bottom: 10px;">The data collected will be used exclusively for academic and research purposes.</li>
+          <li style="margin-bottom: 10px;">Your data will be anonymized and won't be associated with any personal identifiers.</li>
+          <li style="margin-bottom: 10px;">The experiment consists of 2 short tasks. The first involves looking at ambiguous images. The second consist in providing semantically distant words.</li>
+          <li>You can terminate your participation at any time.</li>
+        </ul>
+        
+        <p style="margin-top: 20px;">Press the 'X' key to confirm and continue.</p>
+      </div>
+    `,
+    choices: ['x']
+  };
+
+  var ageVal = null;
+  var nationalityVal = null;
+  var selectedLanguage = null;
+  var demographic_questions = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `
+        <div style="max-width:600px;">
+            <p>Please answer the following demographic questions:</p>
+            
+            <label for="ageInput">What is your age?</label>
+            <input type="number" id="ageInput" name="age" min="1" required><br><br>
+
+            <label for="nationalityInput">What is your nationality?</label>
+            <input type="text" id="nationalityInput" name="nationality" placeholder="e.g. American" required><br><br>
+
+            <label for="languageSelect">What is your primary language?</label>
+            <select id="languageSelect" name="primary_language">
+                <option value="English">English</option>
+                <option value="Spanish">Spanish</option>
+                <option value="Chinese">Chinese</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Arabic">Arabic</option>
+                <option value="Bengali">Bengali</option>
+                <option value="Portuguese">Portuguese</option>
+                <option value="Russian">Russian</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Punjabi">Punjabi</option>
+                <option value="Javanese">Javanese</option>
+                <option value="Malay">Malay</option>
+                <option value="Telugu">Telugu</option>
+                <option value="Vietnamese">Vietnamese</option>
+                <option value="Korean">Korean</option>
+                <option value="French">French</option>
+                <option value="German">German</option>
+                <option value="Italian">Italian</option>
+                <option value="Dutch">Dutch</option>
+                <option value="Greek">Greek</option>
+                <option value="Other">Other</option>
+            </select><br><br>
+        </div>
+    `,
+    choices: ['Continue'],
+    button_html: '<button class="jspsych-btn" disabled id="continueButton">%choice%</button>',
+    on_load: function () {
+      function enableIfCompleted() {
+        ageVal = document.getElementById('ageInput').value;
+        nationalityVal = document.getElementById('nationalityInput').value;
+        selectedLanguage = document.getElementById('languageSelect').value;
+
+        if (ageVal && nationalityVal && selectedLanguage) {
+          document.getElementById('continueButton').disabled = false;
+        }
+      }
+
+      document.getElementById('ageInput').addEventListener('input', enableIfCompleted);
+      document.getElementById('nationalityInput').addEventListener('input', enableIfCompleted);
+      document.getElementById('languageSelect').addEventListener('change', enableIfCompleted);
+    },
+    on_finish: function (trial) {
+      console.log(trial);
+      //let responses = JSON.parse(data.responses);
+      trial.data = ({
+        age: ageVal,
+        nationality: nationalityVal,
+        primary_language: selectedLanguage
+      });
+    }
+  };
+
   var camera_instructions = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
@@ -93,27 +183,27 @@
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function () {
       var url_img = get_sample_image();
-      randomimg = '<img src="' + url_img + '">'; 
+      randomimg = '<img src="' + url_img + '">';
       return randomimg;
     },
     choices: [' '],
     trial_duration: 3000,
     response_ends_trial: false,
-    on_start: function(trial) {
+    on_start: function (trial) {
       trial.data = { onset_time: jsPsych.getTotalTime() };
     },
-    on_finish: function(data) {
+    on_finish: function (data) {
       data.offset_time = jsPsych.getTotalTime();
     },
     trial_duration: 3000,  // 3 seconds
     response_ends_trial: false,  // This will end the trial once the space bar is pressed
     post_trial_gap: 100,
     extensions: [
-          {
-            type: jsPsychExtensionWebgazer, 
-            params: {targets: ['#jspsych-image-keyboard-response-stimulus']}
-          }
-        ]
+      {
+        type: jsPsychExtensionWebgazer,
+        params: { targets: ['#jspsych-image-keyboard-response-stimulus'] }
+      }
+    ]
   };
 
   var Words = {
@@ -174,6 +264,8 @@
     choices: ['CSV', 'JSON'],
     stimulus: `<p>Done!</p><p>If you'd like to download a copy of the data to explore, click the format you'd like below</p>`,
     on_finish: function (data) {
+      var all_data = jsPsych.data.get();
+      post_sample_data(all_data);
       if (data.response == 0) {
         jsPsych.data.get().localSave('csv', 'webgazer-sample-data.csv');
       }
@@ -184,11 +276,11 @@
   };
 
   // API
-  function post_sample_data() {
+  function post_sample_data(data) {
     $.ajax({
       type: "POST",
-      url: "phpfile.php",
-      data: "name=name&location=location",
+      url: "api_post_data.php",
+      data: "data=name&location=location",
       success: function (msg) {
         alert("Data Saved: " + msg);
       }
