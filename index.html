@@ -308,25 +308,24 @@
   };
 
   // API
-  function post_sample_data(data) {
-    $.ajax({
-      type: "POST",
-      url: "api_post_data.php",
-      data: "data=name&location=location",
-      success: function (msg) {
-        alert("Data Saved: " + msg);
-      }
-    });
-  }
-  // Options de la requête
   const requestOptions = {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json', // Indique que vous envoyez des données JSON
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(jsonData), // Convertit les données JSON en chaîne
+    body: JSON.stringify(jsonData),
   };
   const url = 'api_post_data.php';
+  function post_sample_data(data) {
+    fetch(url, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Réponse du serveur PHP :', data);
+      })
+      .catch(error => {
+        console.error('Erreur :', error);
+      });
+  }
 
   function get_sample_image() {
     var randomIndex = Math.floor(Math.random() * image_list.length);
