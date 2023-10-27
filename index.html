@@ -294,7 +294,35 @@
     return list_img[randomIndex];
   }
 
+  // Add this code at the top of your script
 
+  function getRandomImagesFromFolder(folderName, count) {
+    // Assuming you have up to 100 images in each folder. Adjust this number if necessary.
+    const totalImagesInFolder = 100;
+    const selectedIndices = [];
+    while (selectedIndices.length < count) {
+      const randomIndex = Math.floor(Math.random() * totalImagesInFolder) + 1;
+      if (!selectedIndices.includes(randomIndex)) {
+        selectedIndices.push(randomIndex);
+      }
+    }
+    return selectedIndices.map(index => `images/${folderName}/image${index}.jpg`); // Change the filename format if necessary.
+  }
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  const fd12Images = getRandomImagesFromFolder('FD12', 10);
+  const fd14Images = getRandomImagesFromFolder('FD14', 10);
+  const fd16Images = getRandomImagesFromFolder('FD16', 10);
+
+  const image_list = [...fd12Images, ...fd14Images, ...fd16Images];
+  shuffleArray(image_list);
+  
   var jsPsych = initJsPsych({
     on_finish: function () {
       jsPsych.data.displayData();
