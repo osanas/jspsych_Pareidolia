@@ -308,15 +308,16 @@
   };
 
   // API
-  const requestOptions = {
+ 
+  function post_sample_data(data) {
+    const requestOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(jsonData),
+    body: JSON.stringify(data),
   };
   const url = 'api_post_data.php';
-  function post_sample_data(data) {
     fetch(url, requestOptions)
       .then(response => response.json())
       .then(data => {
