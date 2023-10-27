@@ -151,9 +151,9 @@
     }
   };
 
-  var camera_instructions = {
+  var camera_request = {
     type: jsPsychHtmlButtonResponse,
-    trial_id: 'camera_instructions',
+    trial_id: 'camera_request',
     stimulus: `
         <p>This experiment uses your camera for eye tracking.</p>
         <p>In order to participate you must allow the experiment to use your camera.</p>
@@ -162,33 +162,12 @@
       `,
     choices: ['Yes', 'No'],
     post_trial_gap: 1000,
-    on_finish: function (data) {
-      if (data.button_pressed == "0") { // Directly check if "Yes" was clicked
-        timeline.push(init_camera);
-        timeline.push(calibration_instructions);
-        timeline.push(calibration);
-        timeline.push(validation_instructions);
-        timeline.push(validation);
-      }
-    }
   };
 
 
   var init_camera = {
-      type: jsPsychWebgazerInitCamera,
-      conditional_function: shouldIncludeEyeTracking // Only initialize the camera if the user clicked "Yes" in the camera_instructions trial
-    };
-    // Define a function that will check if the user clicked "Yes" in the camera_instructions trial
-    function shouldIncludeEyeTracking() {
-      var lastCameraInstructionData = jsPsych.data.get().filter({ type: 'jsPsychHtmlButtonResponse', trial_id: 'camera_instructions' }).last().values();
-  if (lastCameraInstructionData.length > 0 && lastCameraInstructionData[0].hasOwnProperty('button_pressed')) {
-    return lastCameraInstructionData[0].button_pressed == "0"; // "0" corresponds to the "Yes" button
-  }
-  return false;
-  }
-
-
-
+    type: jsPsychWebgazerInitCamera,
+  };
 
   var calibration_instructions = {
     type: jsPsychHtmlButtonResponse,
@@ -199,7 +178,6 @@
       `,
     choices: ['Click to begin'],
     post_trial_gap: 1000,
-    conditional_function: shouldIncludeEyeTracking // Only show the calibration instructions if the user clicked "Yes" in the camera_instructions trial
   };
 
   var calibration = {
@@ -210,7 +188,6 @@
     extensions: [
       { type: jsPsychExtensionWebgazer, params: { showGazeDot: true } }
     ],
-    conditional_function: shouldIncludeEyeTracking // Only show the calibration trials if the user clicked "Yes" in the camera_instructions trial
   };
 
 
@@ -223,7 +200,6 @@
       `,
     choices: ['Click to begin'],
     post_trial_gap: 1000,
-    conditional_function: shouldIncludeEyeTracking // Only show the validation instructions if the user clicked "Yes" in the camera_instructions trial
   };
 
   var validation = {
@@ -233,7 +209,6 @@
     extensions: [
       { type: jsPsychExtensionWebgazer, params: { showGazeDot: true } }
     ],
-    conditional_function: shouldIncludeEyeTracking // Only show the validation trials if the user clicked "Yes" in the camera_instructions trial
   };
 
 
@@ -379,15 +354,31 @@
     ]
   });
 
+
   var timeline = [];
+
+  var if_camera = {
+    timeline: [calibration_instructions, calibration, validation_instructions, validation],
+    conditional_function: function () {
+      // get the data from the previous trial,
+      // and check which key was pressed
+      var data = jsPsych.data.get().last(1).values()[0];
+      if (data.response == 1) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+
+  var after_if_trial = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: 'Pareidolie'
+  }
   timeline.push(research_info);
   timeline.push(demographic_questions);
-  timeline.push(camera_instructions);
-  // timeline.push(calibration_instructions);
-  // timeline.push(calibration);
-  // timeline.push(validation_instructions);
-  // timeline.push(validation);
-
+  timeline.push(camera_request);
+  timeline.push(if_camera);
   timeline.push(pareidolia_instructions);
   timeline.push(n_back_sequence);
   timeline.push(DAT_instructions);
@@ -395,7 +386,6 @@
   timeline.push(done);
 
   jsPsych.run(timeline);
-
 
 </script>
 
