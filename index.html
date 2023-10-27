@@ -122,12 +122,18 @@
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function () {
       var url_img = getImage();
-      randomimg = '<img src="' + url_img + '">'; // You should replace this with a function to get a random image from your accessible files
+      randomimg = '<img src="' + url_img + '">'; 
       return randomimg;
     },
     choices: [' '],
-    trial_duration: 3000,  // 3 seconds
-    response_ends_trial: false  // This will end the trial once the space bar is pressed
+    trial_duration: 3000,
+    response_ends_trial: false,
+    on_start: function(trial) {
+      trial.data.onset_time = jsPsych.totalTime();
+    },
+    on_finish: function(data) {
+      data.offset_time = jsPsych.totalTime();
+    }
   };
 
   var Words = {
