@@ -13,7 +13,7 @@ if ($mysqli->connect_error) {
 }
 
 // Votre données JSON brut
-// $jsonData = '{"nom": "John", "age": 30, "ville": "Paris"}';
+$jsonData = json_decode(file_get_contents('php://input'), true);
 
 // Préparez la requête SQL avec un paramètre
 // $query = "INSERT INTO votre_table (ID, DateCreation, IP, UserAgent, DataJson) VALUES (?, ?, ?, ?, ?)";
