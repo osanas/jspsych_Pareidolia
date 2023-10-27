@@ -1,6 +1,6 @@
 <?php
 
-// Établissez la connexion à la base de données
+// connexion
 $host = "localhost";
 $user = "anaso518_Pareildoliajl12h3109";
 $pass = "-CPgIYHI-(Kr";
@@ -12,30 +12,34 @@ if ($mysqli->connect_error) {
     die("La connexion à la base de données a échoué : " . $mysqli->connect_error);
 }
 
-// Votre données JSON brut
-$jsonData = json_decode(file_get_contents('php://input'), true);
 
-// Préparez la requête SQL avec un paramètre
-// $query = "INSERT INTO votre_table (ID, DateCreation, IP, UserAgent, DataJson) VALUES (?, ?, ?, ?, ?)";
-$query = "INSERT INTO data_trial (data_json) VALUES (?)";
-$stmt = $mysqli->prepare($query);
+// data brut
+$dataJson = file_get_contents('php://input');
+$ip = $_SERVER['REMOTE_ADDR'];
+$userAgent = $_SERVER['HTTP_USER_AGENT'];
+$dateCreation = date('Y-m-d H:i:s');
 
-if ($stmt === false) {
-    die("Erreur de préparation de la requête : " . $mysqli->error);
-}
+// prepare
+$sql = "INSERT INTO logs (ip, user_agent, date_creation, data_json) VALUES (?, ?, ?, ?)";
+$stmt = $mysqli->prepare($sql);
 
-// Liez le paramètre
-$stmt->bind_param("s", $jsonData);
+if ($stmt) {
+    // Liez les paramètres
+    $stmt->bind_param("ssss", $ip, $userAgent, $dateCreation, $dataJson);
 
-// Exécutez la requête
-if ($stmt->execute()) {
-    echo "Données JSON insérées avec succès.";
+    // Exécutez la requête
+    if ($stmt->execute()) {
+        echo "Données insérées avec succès.";
+    } else {
+        echo "Erreur lors de l'insertion des données : " . $stmt->error;
+    }
+
+    // Fermez la déclaration
+    $stmt->close();
 } else {
-    echo "Erreur lors de l'insertion des données JSON : " . $stmt->error;
+    echo "Erreur de préparation de la requête : " . $mysqli->error;
 }
 
-// Fermez la connexion
-$stmt->close();
 $mysqli->close();
 
 ?>
