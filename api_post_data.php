@@ -17,7 +17,7 @@ $jsonData = json_decode(file_get_contents('php://input'), true);
 
 // Préparez la requête SQL avec un paramètre
 // $query = "INSERT INTO votre_table (ID, DateCreation, IP, UserAgent, DataJson) VALUES (?, ?, ?, ?, ?)";
-$query = "INSERT INTO votre_table (DataJson) VALUES (?)";
+$query = "INSERT INTO data_trial (data_json) VALUES (?)";
 $stmt = $mysqli->prepare($query);
 
 if ($stmt === false) {
