@@ -1,0 +1,26 @@
+.jspsych-content {
+    max-width: 100%;
+}
+
+/* Adjusting the height of the input fields for the words */
+.jspsych-survey-text input[type="text"] {
+    height: 50px;
+    /* Adjust this value as per your preference */
+}
+
+/* Adjusting the space for the 10 words in the DAT */
+.jspsych-survey-text-question {
+    margin-bottom: 10px;
+    /* Adjust this value as per your preference */
+}
+
+/* Centering pareidolia instructions */
+.pareidolia-instruction-container {
+    max-width: 600px;
+    /* Adjust this value as per your preference */
+    margin: 0 auto;
+}
+
+.jspsych-content {
+    max-width: 100%;
+}
