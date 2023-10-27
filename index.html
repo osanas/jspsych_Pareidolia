@@ -22,6 +22,35 @@
 
 <body></body>
 <script>
+
+  // Add this code at the top of your script
+
+  function getRandomImagesFromFolder(FD, count) {
+    // Assuming you have up to 100 images in each folder. Adjust this number if necessary.
+    const totalImagesInFolder = 100;
+    const selectedIndices = [];
+    while (selectedIndices.length < count) {
+      const randomIndex = Math.floor(Math.random() * totalImagesInFolder) + 1;
+      if (!selectedIndices.includes(randomIndex)) {
+        selectedIndices.push(randomIndex);
+      }
+    }
+    return selectedIndices.map(index => `images/FD${FD}/FD_${FD}_${index}.png`); // Change the filename format if necessary.
+  }
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  const fd12Images = getRandomImagesFromFolder('12', 10);
+  const fd14Images = getRandomImagesFromFolder('14', 10);
+  const fd16Images = getRandomImagesFromFolder('16', 10);
+
+  const image_list = [...fd12Images, ...fd14Images, ...fd16Images];
+  shuffleArray(image_list);
   // preloading videos only works when the file is running on a server
   // if you run this experiment by opening the file directly in the browser,
   // then video preloading will be disabled to prevent CORS errors
@@ -195,15 +224,13 @@
     on_finish: function (data) {
       data.offset_time = jsPsych.getTotalTime();
     },
-    trial_duration: 3000,  // 3 seconds
-    response_ends_trial: false,  // This will end the trial once the space bar is pressed
     post_trial_gap: 100,
-    extensions: [
-      {
-        type: jsPsychExtensionWebgazer,
-        params: { targets: ['#jspsych-image-keyboard-response-stimulus'] }
-      }
-    ]
+    // extensions: [
+    //   {
+    //     type: jsPsychExtensionWebgazer,
+    //     params: { targets: ['#jspsych-image-keyboard-response-stimulus'] }
+    //   }
+    // ]
   };
 
   var Words = {
@@ -287,42 +314,16 @@
     });
   }
   function get_sample_image() {
-    var list_img =
-      ['https://www.laboiteverte.fr/wp-content/uploads/2014/03/Pareidolie-Visage-Objet-01.jpg',
-        'https://emag.magmalemag.com/upload/remuemeninges/5-la-pareidolie-ou-l-art-de-174521-26.51.19.jpg'];
+    var list_img = image_list;
     var randomIndex = Math.floor(Math.random() * list_img.length);
-    return list_img[randomIndex];
+    var url = list_img[randomIndex];
+    // delete the image from the list
+    list_img.splice(randomIndex, 1);
+    return url;
   }
 
-  // Add this code at the top of your script
 
-  function getRandomImagesFromFolder(folderName, count) {
-    // Assuming you have up to 100 images in each folder. Adjust this number if necessary.
-    const totalImagesInFolder = 100;
-    const selectedIndices = [];
-    while (selectedIndices.length < count) {
-      const randomIndex = Math.floor(Math.random() * totalImagesInFolder) + 1;
-      if (!selectedIndices.includes(randomIndex)) {
-        selectedIndices.push(randomIndex);
-      }
-    }
-    return selectedIndices.map(index => `images/${folderName}/image${index}.jpg`); // Change the filename format if necessary.
-  }
 
-  function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
-
-  const fd12Images = getRandomImagesFromFolder('FD12', 10);
-  const fd14Images = getRandomImagesFromFolder('FD14', 10);
-  const fd16Images = getRandomImagesFromFolder('FD16', 10);
-
-  const image_list = [...fd12Images, ...fd14Images, ...fd16Images];
-  shuffleArray(image_list);
-  
   var jsPsych = initJsPsych({
     on_finish: function () {
       jsPsych.data.displayData();
@@ -333,12 +334,12 @@
   });
   var timeline = [];
 
-  timeline.push(camera_instructions);
-  timeline.push(init_camera);
-  timeline.push(calibration_instructions);
-  timeline.push(calibration);
-  timeline.push(validation_instructions);
-  timeline.push(validation);
+  // timeline.push(camera_instructions);
+  // timeline.push(init_camera);
+  // timeline.push(calibration_instructions);
+  // timeline.push(calibration);
+  // timeline.push(validation_instructions);
+  // timeline.push(validation);
 
   timeline.push(n_back_sequence);
 
