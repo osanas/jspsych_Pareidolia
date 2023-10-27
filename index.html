@@ -92,12 +92,11 @@
   var Experiment = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function () {
-      var url_img = getImage();
+      var url_img = get_sample_image();
       randomimg = '<img src="' + url_img + '">'; 
       return randomimg;
     },
     choices: [' '],
-<<<<<<< Updated upstream
     trial_duration: 3000,
     response_ends_trial: false,
     on_start: function(trial) {
@@ -105,12 +104,16 @@
     },
     on_finish: function(data) {
       data.offset_time = jsPsych.getTotalTime();
-    }
-=======
+    },
     trial_duration: 3000,  // 3 seconds
     response_ends_trial: false,  // This will end the trial once the space bar is pressed
-    post_trial_gap: 100
->>>>>>> Stashed changes
+    post_trial_gap: 100,
+    extensions: [
+          {
+            type: jsPsychExtensionWebgazer, 
+            params: {targets: ['#jspsych-image-keyboard-response-stimulus']}
+          }
+        ]
   };
 
   var Words = {
@@ -191,13 +194,10 @@
       }
     });
   }
-  function get_sample_images() {
-
-    // Call Api GetImage();
+  function get_sample_image() {
     var list_img =
       ['https://www.laboiteverte.fr/wp-content/uploads/2014/03/Pareidolie-Visage-Objet-01.jpg',
         'https://emag.magmalemag.com/upload/remuemeninges/5-la-pareidolie-ou-l-art-de-174521-26.51.19.jpg'];
-
     var randomIndex = Math.floor(Math.random() * list_img.length);
     return list_img[randomIndex];
   }
@@ -212,14 +212,6 @@
     ]
   });
   var timeline = [];
-<<<<<<< Updated upstream
-  // timeline.push(camera_instructions);
-  // timeline.push(init_camera);
-  // timeline.push(calibration_instructions);
-  // timeline.push(calibration);
-  // timeline.push(validation_instructions);
-  // timeline.push(validation);
-=======
 
   timeline.push(camera_instructions);
   timeline.push(init_camera);
@@ -227,7 +219,6 @@
   timeline.push(calibration);
   timeline.push(validation_instructions);
   timeline.push(validation);
->>>>>>> Stashed changes
 
   timeline.push(n_back_sequence);
 
