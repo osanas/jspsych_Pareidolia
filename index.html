@@ -129,10 +129,10 @@
     trial_duration: 3000,
     response_ends_trial: false,
     on_start: function(trial) {
-      trial.data.onset_time = jsPsych.totalTime();
+      trial.data = { onset_time: jsPsych.getTotalTime() };
     },
     on_finish: function(data) {
-      data.offset_time = jsPsych.totalTime();
+      data.offset_time = jsPsych.getTotalTime();
     }
   };
 
@@ -211,12 +211,12 @@
     ]
   });
   var timeline = [];
-  timeline.push(camera_instructions);
-  timeline.push(init_camera);
-  timeline.push(calibration_instructions);
-  timeline.push(calibration);
-  timeline.push(validation_instructions);
-  timeline.push(validation);
+  // timeline.push(camera_instructions);
+  // timeline.push(init_camera);
+  // timeline.push(calibration_instructions);
+  // timeline.push(calibration);
+  // timeline.push(validation_instructions);
+  // timeline.push(validation);
 
   timeline.push(n_back_sequence);
 
