@@ -64,10 +64,10 @@
   };
 
   var research_info = {
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div style="max-width:900px; font-size: 16px; line-height: 1.5;">
-        <p style="margin-bottom: 20px;">Welcome to this research!</p>
+        <p style="margin-bottom: 20px;">Welcome to this Online Pareidolia Game!</p>
         
         <p style="margin-bottom: 20px;">By participating, you agree to the following:</p>
         
@@ -78,11 +78,12 @@
           <li>You can terminate your participation at any time.</li>
         </ul>
         
-        <p style="margin-top: 20px;">Press the 'X' key to confirm and continue.</p>
-      </div>
+        <p style="margin-top: 20px;"></p>
+
     `,
-    choices: ['x']
-  };
+    choices: ['Agree'] // index of the "Agree" button
+};
+
 
 
   var demographic_questions = {
@@ -215,7 +216,7 @@
   var pareidolia_instructions = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-        <p>In the next part of the experiment, you will see a series of images. Some images may seem like random patterns, but they may also evoke some forms or entities. Your task is to identify and name these entities if you see any. You will have 10 seconds to look at each image. If you recognize something before 10 seconds, press the space bar. Afterward, you will be asked to input up to 3 words that describe what you saw in the image.</p>
+        <p>The first part of the experiment involves looking at a series of ambiguous images. Some images may seem like random patterns, but they may also evoke some forms or meaningful objects. Your task is to identify and name these objects if you see any. You will have 10 seconds to look at each image. If you recognize something before 10 seconds, press the space bar. Afterward, you will be asked to input up to 3 words that describe what you saw in the image.</p>
       `,
     choices: ['Click to begin']
   };
