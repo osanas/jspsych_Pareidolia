@@ -142,7 +142,6 @@
       document.getElementById('languageSelect').addEventListener('change', enableIfCompleted);
     },
     on_finish: function (trial) {
-      console.log(trial);
       //let responses = JSON.parse(data.responses);
       trial.data = ({
         age: ageVal,
@@ -359,7 +358,7 @@
   var timeline = [];
 
   var if_camera = {
-    timeline: [calibration_instructions, calibration, validation_instructions, validation],
+    timeline: [calibration_instructions, init_camera, calibration, validation_instructions, validation],
     conditional_function: function () {
       // get the data from the previous trial,
       // and check which key was pressed
