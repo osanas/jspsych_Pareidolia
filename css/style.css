@@ -1,26 +1,49 @@
 .jspsych-content {
-    max-width: 100%;
+	max-width: 100%;
 }
-
+.jspsych-content-wrapper {
+	background: #b7b7b7;
+}
 /* Adjusting the height of the input fields for the words */
 .jspsych-survey-text input[type="text"] {
-    height: 50px;
-    /* Adjust this value as per your preference */
+	height: 50px;
+	/* Adjust this value as per your preference */
 }
 
 /* Adjusting the space for the 10 words in the DAT */
 .jspsych-survey-text-question {
-    margin-bottom: 10px;
-    /* Adjust this value as per your preference */
+	margin-bottom: 10px;
+	/* Adjust this value as per your preference */
 }
 
 /* Centering pareidolia instructions */
 .pareidolia-instruction-container {
-    max-width: 600px;
-    /* Adjust this value as per your preference */
-    margin: 0 auto;
+	max-width: 600px;
+	/* Adjust this value as per your preference */
+	margin: 0 auto;
+}
+.hide-labels .jspsych-survey-text {
+	display: none;
 }
 
-.jspsych-content {
-    max-width: 100%;
+.jspsych-survey-text-question {
+	margin: 1.3em 0em !important;
+}
+
+p {
+    margin: 6px 0px;
+}
+
+input, select {
+	height: 30px;
+	border-radius: 5px;
+	padding-left: 10px;
+	border: 1px solid #979797;
+	font-weight: 600;
+}
+
+button.jspsych-btn {
+    font-weight: 600;
+    padding: 8px 26px;
+    background-color: #cae9ff;
 }

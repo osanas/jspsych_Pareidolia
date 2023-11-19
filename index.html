@@ -2,10 +2,12 @@
 <html>
 
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <script src="dist/jspsych.js"></script>
   <script src="dist/plugin-fullscreen.js"></script>
   <script src="dist/plugin-html-button-response.js"></script>
   <script src="dist/plugin-html-keyboard-response.js"></script>
+  <script src="dist/plugin-image-keyboard-response.js"></script>
   <script src="dist/plugin-survey-text.js"></script>
   <script src="dist/plugin-webgazer-init-camera.js"></script>
   <script src="dist/plugin-webgazer-calibrate.js"></script>
@@ -13,50 +15,26 @@
   <script src="js/webgazer/webgazer.js"></script>
   <script src="dist/extension-webgazer.js"></script>
   <link rel="stylesheet" href="dist/jspsych.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 
 
 <body></body>
 <script>
 
-  // preloading videos only works when the file is running on a server
-  // if you run this experiment by opening the file directly in the browser,
-  // then video preloading will be disabled to prevent CORS errors
-
-  function getRandomImagesFromFolder(FD, count) {
-    // Assuming you have up to 100 images in each folder. Adjust this number if necessary.
-    const totalImagesInFolder = 100;
-    const selectedIndices = [];
-    while (selectedIndices.length < count) {
-      const randomIndex = Math.floor(Math.random() * totalImagesInFolder) + 1;
-      if (!selectedIndices.includes(randomIndex)) {
-        selectedIndices.push(randomIndex);
-      }
-    }
-    return selectedIndices.map(index => `images/FD${FD}/FD_${FD}_${index}.png`); // Change the filename format if necessary.
-  }
-
-  function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
-
   let ageVal = null;
   let nationalityVal = null;
   let selectedLanguage = null;
+  let useEyeTracking = false;
 
-
-  const fd12Images = getRandomImagesFromFolder('12', 10);
-  const fd14Images = getRandomImagesFromFolder('14', 10);
-  const fd16Images = getRandomImagesFromFolder('16', 10);
+  const fd12Images = get_random_images_from_folder('12', 10);
+  const fd14Images = get_random_images_from_folder('14', 10);
+  const fd16Images = get_random_images_from_folder('16', 10);
 
   const image_list = [...fd12Images, ...fd14Images, ...fd16Images];
   shuffleArray(image_list);
 
-  ////////////// Start //////////////
+  // --------------- Start ---------------
 
   var fullscreen = {
     type: jsPsychFullscreen,
@@ -67,11 +45,11 @@
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div style="max-width:900px; font-size: 16px; line-height: 1.5;">
-        <p style="margin-bottom: 20px;">Welcome to this Online Pareidolia Game!</p>
+        <h2 style="margin-bottom: 20px;">Welcome to this Online Pareidolia Game!</h2>
         
-        <p style="margin-bottom: 20px;">By participating, you agree to the following:</p>
+        <h3 style="margin-bottom: 20px;">By participating, you agree to the following:</h3>
         
-        <ul style="margin-bottom: 20px;">
+        <ul style="margin-bottom: 20px;text-align: left;max-width: 627px;">
           <li style="margin-bottom: 10px;">The data collected will be used exclusively for academic and research purposes.</li>
           <li style="margin-bottom: 10px;">Your data will be anonymized and won't be associated with any personal identifiers.</li>
           <li style="margin-bottom: 10px;">The experiment consists of 2 short tasks. The first involves looking at ambiguous images. The second consist in providing semantically distant words.</li>
@@ -82,46 +60,46 @@
 
     `,
     choices: ['Agree'] // index of the "Agree" button
-};
-
-
+  };
 
   var demographic_questions = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
         <div style="max-width:600px;">
-            <p>Please answer the following demographic questions:</p>
-            
-            <label for="ageInput">What is your age?</label>
-            <input type="number" id="ageInput" name="age" min="1" required><br><br>
+            <h3>Please answer the following demographic questions:</h3>
+            <div style="margin-bottom: 20px;text-align: left;">
+              <label for="ageInput" style="width:100px; display: inline-block;">Age</label>
+              <input type="number" id="ageInput" name="age" min="1" required><br><br>
 
-            <label for="nationalityInput">What is your nationality?</label>
-            <input type="text" id="nationalityInput" name="nationality" placeholder="e.g. American" required><br><br>
+              <label for="nationalityInput" style="width:100px; display: inline-block;">Nationality</label>
+              <input type="text" id="nationalityInput" name="nationality" placeholder="e.g. American" required><br><br>
 
-            <label for="languageSelect">What is your primary language?</label>
-            <select id="languageSelect" name="primary_language">
-                <option value="English">English</option>
-                <option value="Spanish">Spanish</option>
-                <option value="Chinese">Chinese</option>
-                <option value="Hindi">Hindi</option>
-                <option value="Arabic">Arabic</option>
-                <option value="Bengali">Bengali</option>
-                <option value="Portuguese">Portuguese</option>
-                <option value="Russian">Russian</option>
-                <option value="Japanese">Japanese</option>
-                <option value="Punjabi">Punjabi</option>
-                <option value="Javanese">Javanese</option>
-                <option value="Malay">Malay</option>
-                <option value="Telugu">Telugu</option>
-                <option value="Vietnamese">Vietnamese</option>
-                <option value="Korean">Korean</option>
-                <option value="French">French</option>
-                <option value="German">German</option>
-                <option value="Italian">Italian</option>
-                <option value="Dutch">Dutch</option>
-                <option value="Greek">Greek</option>
-                <option value="Other">Other</option>
-            </select><br><br>
+              <label for="languageSelect" style="width:100px; display: inline-block;">Language</label>
+              <select id="languageSelect" name="primary_language">
+                  <option value="English">English</option>
+                  <option value="Spanish">Spanish</option>
+                  <option value="Chinese">Chinese</option>
+                  <option value="Hindi">Hindi</option>
+                  <option value="Arabic">Arabic</option>
+                  <option value="Bengali">Bengali</option>
+                  <option value="Portuguese">Portuguese</option>
+                  <option value="Russian">Russian</option>
+                  <option value="Japanese">Japanese</option>
+                  <option value="Punjabi">Punjabi</option>
+                  <option value="Javanese">Javanese</option>
+                  <option value="Malay">Malay</option>
+                  <option value="Telugu">Telugu</option>
+                  <option value="Vietnamese">Vietnamese</option>
+                  <option value="Korean">Korean</option>
+                  <option value="French">French</option>
+                  <option value="German">German</option>
+                  <option value="Italian">Italian</option>
+                  <option value="Dutch">Dutch</option>
+                  <option value="Greek">Greek</option>
+                  <option value="Other">Other</option>
+              </select>
+              <br><br>
+          </div>
         </div>
     `,
     choices: ['Continue'],
@@ -151,6 +129,8 @@
     }
   };
 
+  // --------------- Webgazer (eye tracking) ---------------
+
   var camera_request = {
     type: jsPsychHtmlButtonResponse,
     trial_id: 'camera_request',
@@ -163,7 +143,6 @@
     choices: ['Yes', 'No'],
     post_trial_gap: 1000,
   };
-
 
   var init_camera = {
     type: jsPsychWebgazerInitCamera,
@@ -190,7 +169,6 @@
     ],
   };
 
-
   var validation_instructions = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
@@ -211,20 +189,50 @@
     ],
   };
 
+  // --------------- Pareidolia Experiment Sequence---------------
 
   var pareidolia_instructions = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-        <p>The first part of the experiment involves looking at a series of ambiguous images. Some images may seem like random patterns, but they may also evoke some forms or meaningful objects. Your task is to identify and name these objects if you see any. You will have 10 seconds to look at each image. If you recognize something before 10 seconds, press the space bar. Afterward, you will be asked to input up to 3 words that describe what you saw in the image.</p>
-      `,
+    <div>
+      <p>The first part of the experiment involves looking at a series of ambiguous images. </p>
+      <p>Some images may seem like random patterns, but they may also evoke some forms or meaningful objects. </p>
+      <p>Your task is to identify and name these objects if you see any. </p>
+      </br>
+      <p>You will have <b>10 seconds</b> to look at each image.</p>
+      <p>If you recognize something before 10 seconds, <b>press the space bar </b>. </p>
+      <p>Afterward, you will be asked to input up to <b>3 words</b> that describe what you saw in the image.</p>
+    </div>
+    `,
     choices: ['Click to begin']
   };
 
-  var Experiment = {
+  var experiment = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function () {
       var url_img = get_sample_image();
-      randomimg = '<img src="' + url_img + '">';
+      randomimg = '<img style="max-width: 55%;" src="' + url_img + '">';
+      return randomimg;
+    },
+    choices: [' '],
+    trial_duration: 3000,
+    response_ends_trial: false,
+    on_start: function (trial) {
+      trial.data = { onset_time: jsPsych.getTotalTime() };
+    },
+    on_finish: function (data) {
+      data.offset_time = jsPsych.getTotalTime();
+    },
+    trial_duration: 3000,  // 3 seconds
+    response_ends_trial: false,  // This will end the trial once the space bar is pressed
+    post_trial_gap: 100
+  };
+
+  var experiment_eye_tracking = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: function () {
+      var url_img = get_sample_image();
+      randomimg = '<img style="max-width: 55%;" src="' + url_img + '">';
       return randomimg;
     },
     choices: [' '],
@@ -247,12 +255,12 @@
     ]
   };
 
-  var Words = {
+  var words = {
     type: jsPsychSurveyText,
     questions: [
-      { prompt: 'Word 1', columns: 3, required: false, name: 'word1' },
-      { prompt: 'Word 2', columns: 3, required: false, name: 'word2' },
-      { prompt: 'Word 3', columns: 3, required: false, name: 'word3' }
+      { prompt: 'word 1', columns: 20, required: false, placeholder: 'word 1', name: 'word1' },
+      { prompt: 'word 2', columns: 20, required: false, placeholder: 'word 2', name: 'word2' },
+      { prompt: 'word 3', columns: 20, required: false, placeholder: 'word 3', name: 'word3' }
     ],
     randomize_question_order: false,
     conditional_function: function () {
@@ -262,11 +270,33 @@
     post_trial_gap: 100
   };
 
-  var n_back_sequence = {
-    timeline: [Experiment, Words],
-    // timeline_variables:
-    repetitions: 3
+  var fixation_cross = {
+    type: jsPsychImageKeyboardResponse,
+    stimulus: './images/fixation_cross.png', // Set the width as desired; 'height: auto' maintains the aspect ratio
+    choices: 'NO_KEYS',
+    stimulus_width: 700,
+    stimulus_height: 700,
+    trial_duration: 1000,
+    response_ends_trial: false
+  };
+
+  var sequence_eye_tracking = {
+    timeline: [fixation_cross, experiment_eye_tracking, words],
+    repetitions: 3,
+    conditional_function: function () {
+      return useEyeTracking;
+    }
   }
+
+  var sequence = {
+    timeline: [fixation_cross, experiment, words],
+    repetitions: 3,
+    conditional_function: function () {
+      return !useEyeTracking;
+    }
+  }
+
+  // --------------- End of Experiment---------------
 
   var DAT_instructions = {
     type: jsPsychHtmlButtonResponse,
@@ -286,18 +316,19 @@
   var DAT_test = {
     type: jsPsychSurveyText,
     questions: [
-      { prompt: 'Word 1', columns: 20, required: true, name: 'word1' },
-      { prompt: 'Word 2', columns: 20, required: true, name: 'word2' },
-      { prompt: 'Word 3', columns: 20, required: true, name: 'word3' },
-      { prompt: 'Word 4', columns: 20, required: true, name: 'word4' },
-      { prompt: 'Word 5', columns: 20, required: true, name: 'word5' },
-      { prompt: 'Word 6', columns: 20, required: true, name: 'word6' },
-      { prompt: 'Word 7', columns: 20, required: true, name: 'word7' },
-      { prompt: 'Word 8', columns: 20, required: true, name: 'word8' },
-      { prompt: 'Word 9', columns: 20, required: true, name: 'word9' },
-      { prompt: 'Word 10', columns: 20, required: true, name: 'word10' }
+      { prompt: 'Word 1', columns: 25, required: true, placeholder: 'word 1' },
+      { prompt: 'Word 2', columns: 25, required: true, placeholder: 'word 2' },
+      { prompt: 'Word 3', columns: 25, required: true, placeholder: 'word 3' },
+      { prompt: 'Word 4', columns: 25, required: true, placeholder: 'word 4' },
+      { prompt: 'Word 5', columns: 25, required: true, placeholder: 'word 5' },
+      { prompt: 'Word 6', columns: 25, required: true, placeholder: 'word 6' },
+      { prompt: 'Word 7', columns: 25, required: true, placeholder: 'word 7' },
+      { prompt: 'Word 8', columns: 25, required: true, placeholder: 'word 8' },
+      { prompt: 'Word 9', columns: 25, required: true, placeholder: 'word 9' },
+      { prompt: 'Word 10', columns: 25, required: true, placeholder: 'word 10' }
     ],
-    randomize_question_order: false
+    randomize_question_order: false,
+    css_classes: 'hide-labels'
   };
 
   var done = {
@@ -316,7 +347,7 @@
     }
   };
 
-  // API
+  // --------------- API + functions ---------------
 
   function post_sample_data(data) {
     const requestOptions = {
@@ -345,6 +376,29 @@
     return url;
   }
 
+  function get_random_images_from_folder(FD, count) {
+    // Assuming you have up to 100 images in each folder. Adjust this number if necessary.
+    const totalImagesInFolder = 100;
+    const selectedIndices = [];
+    while (selectedIndices.length < count) {
+      const randomIndex = Math.floor(Math.random() * totalImagesInFolder);
+      if (!selectedIndices.includes(randomIndex)) {
+        selectedIndices.push(randomIndex);
+      }
+    }
+    return selectedIndices.map(index => `images/FD${FD}/FD_${FD}_${index}.png`); // Change the filename format if necessary.
+  }
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+
+  // --------------- init JsPsych ---------------
+
   var jsPsych = initJsPsych({
     on_finish: function () {
       jsPsych.data.displayData();
@@ -353,7 +407,6 @@
       { type: jsPsychExtensionWebgazer, params: { showGazeDot: false } }
     ]
   });
-
 
   var timeline = [];
 
@@ -380,7 +433,10 @@
   timeline.push(camera_request);
   timeline.push(if_camera);
   timeline.push(pareidolia_instructions);
-  timeline.push(n_back_sequence);
+  // --------- conditional eye tracking ---------
+  timeline.push(sequence_eye_tracking);
+  timeline.push(sequence);
+  // --------------------------------------------
   timeline.push(DAT_instructions);
   timeline.push(DAT_test);
   timeline.push(done);
