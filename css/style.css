@@ -22,7 +22,7 @@
 	/* Adjust this value as per your preference */
 	margin: 0 auto;
 }
-.hide-labels .jspsych-survey-text {
+.hide-labels p{
 	display: none;
 }
 
@@ -42,8 +42,10 @@ input, select {
 	font-weight: 600;
 }
 
-button.jspsych-btn {
+.jspsych-btn {
     font-weight: 600;
     padding: 8px 26px;
     background-color: #cae9ff;
+    line-height: normal;
+    height: auto;
 }
