@@ -57,7 +57,7 @@ $unique_words_with_fd = array_map("unserialize", array_unique(array_map("seriali
 $words_json = json_encode(array_values($unique_words_with_fd)); 
 
 // Call Python script for t-SNE computation
-$command = escapeshellcmd("python3 /path/to/semantic_analysis.py '$words_json'");
+$command = escapeshellcmd("python3 semantic_analysis.py '$words_json'");
 $output = shell_exec($command);
 
 // Decode the JSON output from the Python script
