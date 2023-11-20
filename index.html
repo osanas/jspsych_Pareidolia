@@ -184,10 +184,11 @@
     type: jsPsychWebgazerValidate,
     validation_points: [[25, 25], [25, 75], [75, 25], [75, 75]],
     show_validation_data: true,
-    extensions: [
-      { type: jsPsychExtensionWebgazer, params: { showGazeDot: true } }
-    ],
+    on_finish: function () {
+      jsPsych.extensions['webgazer'].hideGazeDot();
+    }
   };
+
 
   // --------------- Pareidolia Experiment Sequence---------------
 
