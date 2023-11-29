@@ -226,7 +226,7 @@
       return randomimg;
     },
     choices: [' '],
-    trial_duration: 3000,
+    trial_duration: 10000,
     response_ends_trial: false,
     on_start: function (trial) {
       trial.data = { onset_time: jsPsych.getTotalTime() };
@@ -234,8 +234,6 @@
     on_finish: function (data) {
       data.offset_time = jsPsych.getTotalTime();
     },
-    trial_duration: 3000,  // 3 seconds
-    response_ends_trial: false,  // This will end the trial once the space bar is pressed
     post_trial_gap: 100
   };
 
@@ -247,7 +245,7 @@
       return randomimg;
     },
     choices: [' '],
-    trial_duration: 3000,
+    trial_duration: 10000,
     response_ends_trial: false,
     on_start: function (trial) {
       trial.data = { onset_time: jsPsych.getTotalTime() };
@@ -255,8 +253,6 @@
     on_finish: function (data) {
       data.offset_time = jsPsych.getTotalTime();
     },
-    trial_duration: 3000,  // 3 seconds
-    response_ends_trial: false,  // This will end the trial once the space bar is pressed
     post_trial_gap: 100,
     extensions: [
       {
@@ -293,7 +289,7 @@
 
   var sequence_eye_tracking = {
     timeline: [fixation_cross, experiment_eye_tracking, words],
-    repetitions: 3,
+    repetitions: 30,
     conditional_function: function () {
       return useEyeTracking;
     }
@@ -301,7 +297,7 @@
 
   var sequence = {
     timeline: [fixation_cross, experiment, words],
-    repetitions: 3,
+    repetitions: 30,
     conditional_function: function () {
       return !useEyeTracking;
     }
