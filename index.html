@@ -45,14 +45,14 @@
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div style="max-width:900px; font-size: 16px; line-height: 1.5;">
-        <h2 style="margin-bottom: 20px;">Welcome to this Online Pareidolia Game!</h2>
+        <h2 style="margin-bottom: 20px;">Welcome to the Online Pareidolia Game!</h2>
         
         <h3 style="margin-bottom: 20px;">By participating, you agree to the following:</h3>
         
         <ul style="margin-bottom: 20px;text-align: left;max-width: 627px;">
           <li style="margin-bottom: 10px;">The data collected will be used exclusively for academic and research purposes.</li>
           <li style="margin-bottom: 10px;">Your data will be anonymized and won't be associated with any personal identifiers.</li>
-          <li style="margin-bottom: 10px;">The experiment consists of 2 short tasks. The first involves looking at ambiguous images. The second consist in providing semantically distant words.</li>
+          <li style="margin-bottom: 10px;">The experiment consists of 2 short tasks. The first involves looking at ambiguous images. The second consist in providing semantically distant words. Full description of the tasks will be provided later.</li>
           <li>You can terminate your participation at any time.</li>
         </ul>
         
@@ -66,7 +66,7 @@
     type: jsPsychHtmlButtonResponse,
     stimulus: `
         <div style="max-width:600px;">
-            <h3>Please answer the following demographic questions:</h3>
+            <h3>Please answer the following demographic questions:</h3></br>
             <div style="margin-bottom: 20px;text-align: left;">
               <label for="ageInput" style="width:100px; display: inline-block;">Age</label>
               <input type="number" id="ageInput" name="age" min="1" required><br><br>
@@ -74,8 +74,8 @@
               <label for="nationalityInput" style="width:100px; display: inline-block;">Nationality</label>
               <input type="text" id="nationalityInput" name="nationality" placeholder="e.g. American" required><br><br>
 
-              <label for="languageSelect" style="width:100px; display: inline-block;">Language</label>
-              <select id="languageSelect" name="primary_language">
+              <label for="languageSelect" style="width:100px; display: inline-block;">My native language is</label>
+              <select id="languageSelect" name="my native language is">
                   <option value="English">English</option>
                   <option value="Spanish">Spanish</option>
                   <option value="Chinese">Chinese</option>
@@ -135,12 +135,14 @@
     type: jsPsychHtmlButtonResponse,
     trial_id: 'camera_request',
     stimulus: `
-        <p>This experiment uses your camera for eye tracking.</p>
-        <p>In order to participate you must allow the experiment to use your camera.</p>
-        <p>The camera will only track the motions of your eyes and no image will be recorded.</p>
-        <p>If you do not want to permit the experiment to use your camera, please click "No". Otherwise, click "Yes".</p>
+    <h2>👀 Ready for some eye-tracking fun in our game? 👀</h2>
+    <p>We'll use your webcam to track your eye movements, helping us understand how you play.</p>
+    <h3>Don't worry, we're only interested in your eye movements </h3>
+    <p>No images or videos will be recorded.</p></br></br>
+  
+
       `,
-    choices: ['Yes', 'No'],
+    choices: ['Let\'s Go', 'I will Pass'],
     post_trial_gap: 1000,
   };
 
@@ -151,9 +153,8 @@
   var calibration_instructions = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-        <p>Great! Now the eye tracker will be calibrated to translate the image of your eyes from the webcam to a location on your screen.</p>
-        <p>To do this, you need to click a series of dots.</p>
-        <p>Keep your head still, and click on each dot as it appears. Look at the dot as you click it.</p>
+        <h2>🌟 Great! Now the eye tracker will be calibrated. 🎯</h2>
+        <p>Click on each dot as it appears, keeping your head still and your eyes on the dot.</p></br>
       `,
     choices: ['Click to begin'],
     post_trial_gap: 1000,
@@ -172,9 +173,9 @@
   var validation_instructions = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-        <p>Let's see how accurate the eye tracking is. </p>
-        <p>Keep your head still, and move your eyes to focus on each dot as it appears.</p>
-        <p>You do not need to click on the dots. Just move your eyes to look at the dots.</p>
+      <h3>👀 Ready to test the eye tracker? Let's get started! 🚀</h3>
+      <p>Just keep your head still and follow the dots with your eyes. No clicks needed! 🎉</p></br>
+
       `,
     choices: ['Click to begin'],
     post_trial_gap: 1000,
@@ -196,14 +197,24 @@
     type: jsPsychHtmlButtonResponse,
     stimulus: `
     <div>
-      <p>The first part of the experiment involves looking at a series of ambiguous images. </p>
-      <p>Some images may seem like random patterns, but they may also evoke some forms or meaningful objects. </p>
-      <p>Your task is to identify and name these objects if you see any. </p>
-      </br>
-      <p>You will have <b>10 seconds</b> to look at each image.</p>
-      <p>If you recognize something before 10 seconds, <b>press the space bar </b>. </p>
-      <p>Afterward, you will be asked to input up to <b>3 words</b> that describe what you saw in the image.</p>
+      <h1>🔍 Pareidolia Game 🔍</h1></br></br>
+      <div style="display: flex; align-items: flex-start;">
+        <div style="margin-right: 20px;"> <!-- Adds space between image and text -->
+          <!-- Add your image here -->
+          <img src="./images/example.jpg" alt="Descriptive Text" style="width: auto; max-width: 70%; height: auto;">
+        </div>
+        <div style="text-align: left;">
+          <p>Look at each image for <b>10 seconds</b>.</p>
+          <p>Try to find hidden shapes or objects in these images!</p>
+          <p>When you detect the first percept, <b>press the space bar</b>.</p>
+          <p>Then, describe each percept you found using <b>one word per percept</b>.</p>
+          <p>Let's see what you discover! 🌟</p>
+        </div>
+      </div>
+      <br/><br/>
     </div>
+
+
     `,
     choices: ['Click to begin']
   };
@@ -302,13 +313,21 @@
   var DAT_instructions = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-        <p>Please enter 10 words that are as different from each other as possible, in all meanings and uses of the words.</p>
-        <p>RULES:</p>
-        <p>1. Only single words in English.</p>
-        <p>2. Only nouns (e.g., things, objects, concepts).</p>
-        <p>3. No proper nouns (e.g., no specific people or places).</p>
-        <p>4. No specialised vocabulary (e.g., no technical terms).</p>
-        <p>5. Think of the words on your own (e.g., do not just look at objects in your surroundings).</p>
+    <div>
+      <h1>Divergent Association Task</h1>
+      <p>Please enter 10 words that are as different from each other as possible, in all meanings and uses of the words.</p>
+      <div style="text-align: left; margin: auto; max-width: 493px;">
+        <h2>📜 Rules</h2>
+        <ol style="text-align: left;">
+          <li>Only single words in English.</li>
+          <li>Only nouns (e.g., things, objects, concepts).</li>
+          <li>No proper nouns (e.g., no specific people or places).</li>
+          <li>No specialised vocabulary (e.g., no technical terms).</li>
+          <li>Think of the words on your own (e.g., do not just look at objects in your surroundings).</li>
+        </ol>
+    </div>
+    </div>
+
         `,
     choices: ['Click to begin'],
     post_trial_gap: 1000
