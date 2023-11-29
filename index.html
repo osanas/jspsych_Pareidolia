@@ -201,12 +201,11 @@
     stimulus: `
     <div>
       <h1>🔍 Pareidolia Game 🔍</h1></br></br>
-      <div style="display: flex; align-items: flex-start;">
-        <div style="margin-right: 20px;"> <!-- Adds space between image and text -->
-          <!-- Add your image here -->
-          <img src="./images/example.jpg" alt="Descriptive Text" style="width: auto; max-width: 70%; height: auto;">
+      <div style="display: flex;">
+        <div style="max-width: 327px;margin-right: 30px;width: 47%;"> 
+          <img src="./images/example.png" alt="Descriptive Text" style="width: 100%;">
         </div>
-        <div style="text-align: left;">
+        <div style="text-align: left;padding: 28px 0px;">
           <p>Look at each image for <b>10 seconds</b>.</p>
           <p>Try to find hidden shapes or objects in these images!</p>
           <p>When you detect the first percept, <b>press the space bar</b>.</p>
@@ -230,7 +229,7 @@
       return randomimg;
     },
     choices: [' '],
-    trial_duration: 3000,
+    trial_duration: 10000,
     response_ends_trial: false,
     on_start: function (trial) {
       trial.data = { onset_time: jsPsych.getTotalTime() };
@@ -238,8 +237,6 @@
     on_finish: function (data) {
       data.offset_time = jsPsych.getTotalTime();
     },
-    trial_duration: 3000,  // 3 seconds
-    response_ends_trial: false,  // This will end the trial once the space bar is pressed
     post_trial_gap: 100
   };
 
@@ -251,7 +248,7 @@
       return randomimg;
     },
     choices: [' '],
-    trial_duration: 3000,
+    trial_duration: 10000,
     response_ends_trial: false,
     on_start: function (trial) {
       trial.data = { onset_time: jsPsych.getTotalTime() };
@@ -259,8 +256,6 @@
     on_finish: function (data) {
       data.offset_time = jsPsych.getTotalTime();
     },
-    trial_duration: 3000,  // 3 seconds
-    response_ends_trial: false,  // This will end the trial once the space bar is pressed
     post_trial_gap: 100,
     extensions: [
       {
@@ -297,7 +292,7 @@
 
   var sequence_eye_tracking = {
     timeline: [fixation_cross, experiment_eye_tracking, words],
-    repetitions: 3,
+    repetitions: 30,
     conditional_function: function () {
       return useEyeTracking;
     }
@@ -305,7 +300,7 @@
 
   var sequence = {
     timeline: [fixation_cross, experiment, words],
-    repetitions: 3,
+    repetitions: 30,
     conditional_function: function () {
       return !useEyeTracking;
     }
