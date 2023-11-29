@@ -136,7 +136,8 @@
     trial_id: 'camera_request',
     stimulus: `
     <h2>👀 Ready for some eye-tracking fun in our game? 👀</h2>
-    <p>We'll use your webcam to track your eye movements, helping us understand how you play.</p>
+    <p>We'll use your webcam to track your eye movements</p>
+    <p>helping us understand how you play.</p>
     <h3>Don't worry, we're only interested in your eye movements </h3>
     <p>No images or videos will be recorded.</p></br></br>
   
@@ -154,7 +155,9 @@
     type: jsPsychHtmlButtonResponse,
     stimulus: `
         <h2>🌟 Great! Now the eye tracker will be calibrated. 🎯</h2>
-        <p>Click on each dot as it appears, keeping your head still and your eyes on the dot.</p></br>
+        <p>Click on each dot as it appears</p>
+        <p>keeping your head still and your eyes on the dot.</p>
+        </br>
       `,
     choices: ['Click to begin'],
     post_trial_gap: 1000,
@@ -431,7 +434,7 @@
   var timeline = [];
 
   var if_camera = {
-    timeline: [calibration_instructions, init_camera, calibration, validation_instructions, validation],
+    timeline: [calibration_instructions, init_camera, calibration, validation_instructions, validation, recalibration_timeline],
     conditional_function: function () {
       // get the data from the previous trial,
       // and check which key was pressed
@@ -443,6 +446,35 @@
       }
     }
   }
+
+
+  var recalibration_button = {
+      type: 'html-button-response',
+      stimulus: '<p>Would you like to recalibrate?</p>',
+      choices: ['Yes', 'No'],
+      on_finish: function (data) {
+        if (data.button_pressed === 0) {
+          jsPsych.resumeExperiment();
+        } else {
+          jsPsych.endExperiment();
+        }
+      },
+    };
+
+    // Ajoutez cette étape à votre timeline avant la fin de l'expérience
+    var recalibration_timeline = {
+      timeline: [recalibration_button],
+      conditional_function: function () {
+        // Vous pouvez définir une condition pour afficher cette étape
+        // par exemple, basée sur le résultat de la validation
+        var validation_data = jsPsych.data.get().filter({ task: 'validate' }).values()[0];
+        return validation_data.percent_in_roi.some(function (x) {
+          var minimum_percent_acceptable = 50;
+          return x < minimum_percent_acceptable;
+        });
+      },
+    };
+
 
   var after_if_trial = {
     type: jsPsychHtmlKeyboardResponse,
