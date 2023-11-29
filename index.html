@@ -188,6 +188,9 @@
     type: jsPsychWebgazerValidate,
     validation_points: [[25, 25], [25, 75], [75, 25], [75, 75]],
     show_validation_data: true,
+    // data: {
+    //   task: 'validate'
+    // },
     on_finish: function () {
       jsPsych.extensions['webgazer'].hidePredictions();
     }
@@ -428,8 +431,36 @@
 
   var timeline = [];
 
+
+  var recalibration_button = {
+    type: 'html-button-response',
+    stimulus: '<p>Would you like to recalibrate?</p>',
+    choices: ['Yes', 'No'],
+    on_finish: function (data) {
+      if (data.button_pressed === 0) {
+        jsPsych.resumeExperiment();
+      } else {
+        jsPsych.endExperiment();
+      }
+    },
+  };
+
+  // Ajoutez cette étape à votre timeline avant la fin de l'expérience
+  // var recalibration_timeline = {
+  //   timeline: [recalibration_button],
+  //   conditional_function: function () {
+  //     // Vous pouvez définir une condition pour afficher cette étape
+  //     // par exemple, basée sur le résultat de la validation
+  //     var validation_data = jsPsych.data.get().filter({ task: 'validate' }).values()[0];
+  //     return validation_data.percent_in_roi.some(function (x) {
+  //       var minimum_percent_acceptable = 50;
+  //       return x < minimum_percent_acceptable;
+  //     });
+  //   },
+  // };
+
   var if_camera = {
-    timeline: [calibration_instructions, init_camera, calibration, validation_instructions, validation, recalibration_timeline],
+    timeline: [calibration_instructions, init_camera, calibration, validation_instructions, validation],
     conditional_function: function () {
       // get the data from the previous trial,
       // and check which key was pressed
@@ -442,33 +473,6 @@
     }
   }
 
-
-  var recalibration_button = {
-      type: 'html-button-response',
-      stimulus: '<p>Would you like to recalibrate?</p>',
-      choices: ['Yes', 'No'],
-      on_finish: function (data) {
-        if (data.button_pressed === 0) {
-          jsPsych.resumeExperiment();
-        } else {
-          jsPsych.endExperiment();
-        }
-      },
-    };
-
-    // Ajoutez cette étape à votre timeline avant la fin de l'expérience
-    var recalibration_timeline = {
-      timeline: [recalibration_button],
-      conditional_function: function () {
-        // Vous pouvez définir une condition pour afficher cette étape
-        // par exemple, basée sur le résultat de la validation
-        var validation_data = jsPsych.data.get().filter({ task: 'validate' }).values()[0];
-        return validation_data.percent_in_roi.some(function (x) {
-          var minimum_percent_acceptable = 50;
-          return x < minimum_percent_acceptable;
-        });
-      },
-    };
 
 
   var after_if_trial = {
