@@ -12,6 +12,13 @@ try {
 
     // Retrieve and sanitize input data
     $dataJson = file_get_contents('php://input');
+    if (!$dataJson) {
+        throw new Exception("error");
+    }
+    $decodedData = json_decode($dataJson, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new Exception("error");
+    }
     // Validate or sanitize $dataJson as needed
 
     $ip = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
@@ -26,13 +33,11 @@ try {
     $stmt->bind_param("ssss", $ip, $userAgent, $dateCreation, $dataJson);
     $stmt->execute();
 
-    echo "Données insérées avec succès.";
-
     // Close the statement
     $stmt->close();
 } catch (mysqli_sql_exception $e) {
     // Handle exceptions such as connection and query errors
-    echo "Erreur lors de l'opération sur la base de données : " . $e->getMessage();
+    echo "error"; // . $e->getMessage();
 } finally {
     // Close the connection if it was established
     if ($mysqli) {
