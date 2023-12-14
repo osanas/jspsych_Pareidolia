@@ -46,16 +46,27 @@
 
   // --------------- Start ---------------
   //ProgressBar
-  var _totalTrials = 2; // Set this to the total number of trials in your experiment
-  var _trialDuration = 1000; // Set this to the total number of trials in your experiment
+  var _totalTrials = 30; // Set this to the total number of trials in your experiment
+  var _trialDuration = 10000; // Set this to the total number of trials in your experiment
   var currentTrial = 0;
+
   function updateProgressBar() {
-  var width = (currentTrial / _totalTrials) * 100;
-  $("#progressBar").css('width', width + '%');
+    var width = (currentTrial / _totalTrials) * 100;
+    $("#progressBar").css('width', width + '%');
+  }
+  // progressBar.style.width = width + '%';
+  updateProgressBar(); // Initialize progress bar
+
+  // GUID
+  function getGUID() {
+  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  );
 }
 
-    // progressBar.style.width = width + '%';
-  updateProgressBar(); // Initialize progress bar
+
+
+
 
   var fullscreen = {
     type: jsPsychFullscreen,
@@ -82,7 +93,12 @@
         <p style="margin-top: 20px;"></p>
 
     `,
-    choices: ['Agree'] // index of the "Agree" button
+    choices: ['Agree'],
+    on_finish: function (trial) {
+      trial.name = "Agree";
+      delete trial.stimulus;
+      delete trial.trial_type;
+    }
   };
 
   var demographic_questions = {
@@ -122,7 +138,7 @@
                   <option value="Other">Other</option>
               </select><br><br>
               <div>
-                <label for="codenameInput" style="width:120px; display: inline-block;">Codename\n(if applicable)</label>
+                <label for="codenameInput" style="width:120px; display: inline-block;">Code\n(if applicable)</label>
                 <input type="text" id="codenameInput" name="codename" placeholder="project X" required><br><br><br>
               </div>
               <br><br>
@@ -147,12 +163,15 @@
       document.getElementById('languageSelect').addEventListener('change', enableIfCompleted);
     },
     on_finish: function (trial) {
-      //let responses = JSON.parse(data.responses);
+      trial.name = "demographic";
       trial.data = ({
+        userID: getGUID(),
         age: ageVal,
         nationality: nationalityVal,
         primary_language: selectedLanguage
       });
+      delete trial.stimulus;
+      delete trial.trial_type;
     }
   };
 
@@ -172,6 +191,11 @@
       `,
     choices: ['Let\'s Go', 'I will Pass'],
     post_trial_gap: 1000,
+    on_finish: function (trial) {
+      trial.name = "camera_request";
+      delete trial.stimulus;
+      delete trial.trial_type;
+    }
   };
 
   var init_camera = {
@@ -188,6 +212,11 @@
       `,
     choices: ['Click to begin'],
     post_trial_gap: 1000,
+    on_finish: function (trial) {
+      trial.name = "calibration_instructions";
+      delete trial.stimulus;
+      delete trial.trial_type;
+    }
   };
 
   var calibration = {
@@ -198,6 +227,11 @@
     extensions: [
       { type: jsPsychExtensionWebgazer, params: { showGazeDot: true } }
     ],
+    on_finish: function (trial) {
+      trial.name = "calibration";
+      delete trial.stimulus;
+      delete trial.trial_type;
+    }
   };
 
   var validation_instructions = {
@@ -209,17 +243,22 @@
       `,
     choices: ['Click to begin'],
     post_trial_gap: 1000,
+    on_finish: function (trial) {
+      trial.name = "validation_instructions";
+      delete trial.stimulus;
+      delete trial.trial_type;
+    }
   };
 
   var validation = {
     type: jsPsychWebgazerValidate,
     validation_points: [[25, 25], [25, 75], [75, 25], [75, 75]],
     show_validation_data: true,
-    // data: {
-    //   task: 'validate'
-    // },
-    on_finish: function () {
+    on_finish: function (trial) {
       jsPsych.extensions['webgazer'].hidePredictions();
+      trial.name = "validation";
+      delete trial.stimulus;
+      delete trial.trial_type;
     }
   };
 
@@ -245,37 +284,44 @@
         </div>
       </div>
       <br/><br/>
-    </div>
-
-
-    `,
-    choices: ['Click to begin']
+    </div>`,
+    choices: ['Click to begin'],
+    on_finish: function (trial) {
+      trial.name = "pareidolia_instructions";
+      delete trial.stimulus;
+      delete trial.trial_type;
+    }
   };
 
+  var _url_stimulus = "";
   var experiment = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function () {
-      var url_img = get_sample_image();
-      randomimg = '<img style="max-width: 55%;" src="' + url_img + '">';
+      _url_stimulus = get_sample_image();
+      randomimg = '<img style="max-width: 55%;" src="' + _url_stimulus + '">';
       return randomimg;
     },
     choices: [' '],
     trial_duration: _trialDuration,
     response_ends_trial: false,
+    post_trial_gap: 100,
     on_start: function (trial) {
       trial.data = { onset_time: jsPsych.getTotalTime() };
     },
-    on_finish: function (data) {
-      data.offset_time = jsPsych.getTotalTime();
+    on_finish: function (trial) {
+      trial.offset_time = jsPsych.getTotalTime();
+      trial.name = "experiment";
+      trial.url_stimulus = _url_stimulus;
+      delete trial.stimulus;
+      delete trial.trial_type;
     },
-    post_trial_gap: 100
   };
 
   var experiment_eye_tracking = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function () {
-      var url_img = get_sample_image();
-      randomimg = '<img style="max-width: 55%;" src="' + url_img + '">';
+      _url_stimulus = get_sample_image();
+      randomimg = '<img style="max-width: 55%;" src="' + _url_stimulus + '">';
       return randomimg;
     },
     choices: [' '],
@@ -286,6 +332,10 @@
     },
     on_finish: function (data) {
       data.offset_time = jsPsych.getTotalTime();
+      trial.name = "experiment_eye_tracking";
+      trial.url_stimulus = _url_stimulus;
+      delete trial.stimulus;
+      delete trial.trial_type;
     },
     post_trial_gap: 100,
     extensions: [
@@ -309,10 +359,13 @@
       return last_trial_data.key_press !== null;  // Only display the text boxes if the space bar was pressed in the last trial
     },
     post_trial_gap: 100,
-    on_finish: function() {
-    currentTrial++;
-    updateProgressBar();
-  }
+    on_finish: function (trial) {
+      currentTrial++;
+      updateProgressBar();
+      trial.name = "words";
+      delete trial.stimulus;
+      delete trial.trial_type;
+    },
   };
 
   var fixation_cross = {
@@ -322,7 +375,12 @@
     stimulus_width: 700,
     stimulus_height: 700,
     trial_duration: 1000,
-    response_ends_trial: false
+    response_ends_trial: false,
+    on_finish: function (trial) {
+      trial.name = "fixation_cross";
+      delete trial.stimulus;
+      delete trial.trial_type;
+    },
   };
 
   var sequence_eye_tracking = {
@@ -363,7 +421,12 @@
 
         `,
     choices: ['Click to begin'],
-    post_trial_gap: 1000
+    post_trial_gap: 1000,
+    on_finish: function (trial) {
+      trial.name = "DAT_instructions";
+      delete trial.stimulus;
+      delete trial.trial_type;
+    },
   };
 
   var DAT_test = {
@@ -381,7 +444,15 @@
       { prompt: 'Word 10', columns: 25, required: true, placeholder: 'word 10' }
     ],
     randomize_question_order: false,
-    css_classes: 'hide-labels'
+    css_classes: 'hide-labels',
+    on_finish: function (trial) {
+      trial.name = "DAT_test";
+      delete trial.stimulus;
+      delete trial.trial_type;
+      // sent data
+      var all_data = jsPsych.data.get();
+      post_sample_data(all_data);
+    },
   };
 
   var done = {
@@ -401,17 +472,25 @@
   };
 
   var thankYouScreen = {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: `
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `
     <div style="text-align: center; max-width: 700px; margin: auto; padding: 20px;">
       <h1>Thank You for Participating!</h1>
       <p>For more information and insights, you can <b>read our paper:<b></p>
       <p><a href="https://pubmed.ncbi.nlm.nih.gov/36164655/" target="_blank">Pareidolia and Creativity</a></p>
     </div>
   `,
-  choices: ['Exit'],
-  post_trial_gap: 1000
-};
+    choices: ['Exit'],
+    post_trial_gap: 1000,
+    on_finish: function (trial) {
+      trial.name = "thank_you_screen";
+      delete trial.stimulus;
+      delete trial.trial_type;
+      if (data.response == 0) {
+        alert('let\'s gooooo!');
+      }
+    },
+  };
 
   // --------------- API + functions ---------------
 
@@ -427,7 +506,7 @@
     fetch(url, requestOptions)
       .then(response => response.json())
       .then(data => {
-        console.log('Réponse du serveur PHP :', data);
+        console.log('Réponse du serveur :', data);
       })
       .catch(error => {
         console.error('Erreur :', error);
@@ -538,7 +617,7 @@
   timeline.push(DAT_instructions);
   timeline.push(DAT_test);
   timeline.push(thankYouScreen);
-  
+
 
   jsPsych.run(timeline);
 
