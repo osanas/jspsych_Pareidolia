@@ -1,3 +1,23 @@
+html,
+body {
+	height: 100%;
+	margin: 0;
+}
+
+.full-height {
+	height: 100%;
+}
+#progressBar {
+	height: 18px;
+	background-color: #009688;
+}
+#progressBarContainer {
+	width: 100%;
+	background-color: #ddd;
+	position: fixed;
+	top: 0;
+}
+
 .jspsych-content {
 	max-width: 100%;
 }
@@ -22,7 +42,7 @@
 	/* Adjust this value as per your preference */
 	margin: 0 auto;
 }
-.hide-labels p{
+.hide-labels p {
 	display: none;
 }
 
@@ -31,10 +51,11 @@
 }
 
 p {
-    margin: 6px 0px;
+	margin: 6px 0px;
 }
 
-input, select {
+input,
+select {
 	height: 30px;
 	border-radius: 5px;
 	padding-left: 10px;
@@ -43,9 +64,9 @@ input, select {
 }
 
 .jspsych-btn {
-    font-weight: 600;
-    padding: 8px 26px;
-    background-color: #cae9ff;
-    line-height: normal;
-    height: auto;
+	font-weight: 600;
+	padding: 8px 26px;
+	background-color: #cae9ff;
+	line-height: normal;
+	height: auto;
 }
