@@ -123,7 +123,7 @@
               </select><br><br>
               <div>
                 <label for="codenameInput" style="width:120px; display: inline-block;">Codename\n(if applicable)</label>
-                <input type="text" id="codenameInput" name="codename" placeholder="project sX" required><br><br><br>
+                <input type="text" id="codenameInput" name="codename" placeholder="project X" required><br><br><br>
               </div>
               <br><br>
           </div>
@@ -239,7 +239,7 @@
           <p>Look at each image for <b>10 seconds</b>.</p>
           <p>Try to find hidden shapes or objects in these images!</p>
           <p>When you detect the first percept, <b>press the space bar</b>.</p>
-          <p>Then, describe each percept you found using <b>one word per percept</b>.</p>
+          <p>Then, describe each percept you found using <b>maximum two word per percept</b>.</p>
           <p>Let's see what you discover! 🌟</p>
         </div>
       </div>
@@ -298,9 +298,9 @@
   var words = {
     type: jsPsychSurveyText,
     questions: [
-      { prompt: 'word 1', columns: 20, required: false, placeholder: 'word 1', name: 'word1' },
-      { prompt: 'word 2', columns: 20, required: false, placeholder: 'word 2', name: 'word2' },
-      { prompt: 'word 3', columns: 20, required: false, placeholder: 'word 3', name: 'word3' }
+      { prompt: 'word(s) 1', columns: 20, required: false, placeholder: 'word 1', name: 'word1' },
+      { prompt: 'word(s) 2', columns: 20, required: false, placeholder: 'word 2', name: 'word2' },
+      { prompt: 'word(s) 3', columns: 20, required: false, placeholder: 'word 3', name: 'word3' }
     ],
     randomize_question_order: false,
     conditional_function: function () {
@@ -398,6 +398,19 @@
       }
     }
   };
+
+  var thankYouScreen = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+    <div style="text-align: center; max-width: 700px; margin: auto; padding: 20px;">
+      <h1>Thank You for Participating!</h1>
+      <p>For more information and insights, you can <b>read our paper:<b></p>
+      <p><a href="https://pubmed.ncbi.nlm.nih.gov/36164655/" target="_blank">Pareidolia and Creativity</a></p>
+    </div>
+  `,
+  choices: ['Exit'],
+  post_trial_gap: 1000
+};
 
   // --------------- API + functions ---------------
 
@@ -512,6 +525,7 @@
     stimulus: 'Pareidolie'
   }
   timeline.push(research_info);
+
   timeline.push(demographic_questions);
   timeline.push(camera_request);
   timeline.push(if_camera);
@@ -522,7 +536,8 @@
   // --------------------------------------------
   timeline.push(DAT_instructions);
   timeline.push(DAT_test);
-  timeline.push(done);
+  timeline.push(thankYouScreen);
+  
 
   jsPsych.run(timeline);
 
