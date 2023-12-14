@@ -45,12 +45,12 @@
   shuffleArray(image_list);
 
   // --------------- Start ---------------
-
-
-  var totalTrials = 30; // Set this to the total number of trials in your experiment
+  //ProgressBar
+  var _totalTrials = 2; // Set this to the total number of trials in your experiment
+  var _trialDuration = 1000; // Set this to the total number of trials in your experiment
   var currentTrial = 0;
   function updateProgressBar() {
-  var width = (currentTrial / totalTrials) * 100;
+  var width = (currentTrial / _totalTrials) * 100;
   $("#progressBar").css('width', width + '%');
 }
 
@@ -259,7 +259,7 @@
       return randomimg;
     },
     choices: [' '],
-    trial_duration: 10000,
+    trial_duration: _trialDuration,
     response_ends_trial: false,
     on_start: function (trial) {
       trial.data = { onset_time: jsPsych.getTotalTime() };
@@ -278,7 +278,7 @@
       return randomimg;
     },
     choices: [' '],
-    trial_duration: 10000,
+    trial_duration: _trialDuration,
     response_ends_trial: false,
     on_start: function (trial) {
       trial.data = { onset_time: jsPsych.getTotalTime() };
@@ -326,7 +326,7 @@
 
   var sequence_eye_tracking = {
     timeline: [fixation_cross, experiment_eye_tracking, words],
-    repetitions: 30,
+    repetitions: _totalTrials,
     conditional_function: function () {
       return useEyeTracking;
     }
@@ -334,7 +334,7 @@
 
   var sequence = {
     timeline: [fixation_cross, experiment, words],
-    repetitions: 30,
+    repetitions: _totalTrials,
     conditional_function: function () {
       return !useEyeTracking;
     }
@@ -400,7 +400,7 @@
   };
 
   var thankYouScreen = {
-  type: jsPsychHtmlButtonResponse,
+  type: jsPsychHtmlResponse,
   stimulus: `
     <div style="text-align: center; max-width: 700px; margin: auto; padding: 20px;">
       <h1>Thank You for Participating!</h1>
