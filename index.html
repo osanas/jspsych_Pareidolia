@@ -278,8 +278,10 @@
           <p>Look at each image for <b>10 seconds</b>.</p>
           <p>Try to find hidden shapes or objects in these images!</p>
           <p>When you detect the first percept, <b>press the space bar</b>.</p>
-          <p>Then, describe each percept you found using <b>maximum two words per percept</b>.</p>
-          <p>For example, you can say: <b>"Dog"</b> or with adjective <b>"Angry dog"</b>.</p>
+          <p>Then, describe each percept you found using <b>one word per percept</b>.</p>
+          <p>If the single word doesn't capture well what you've seen, you can add a <b>facultative description</b>.</p>
+          <p>For example, you can say: <b>"Dog"</b> for the single word and <b>"Angry dog with three ears"</b> in the description.</p>
+          <p>You can write the words and description in your <b>native language<b>.</p>
           <p>Let's see what you discover! 🌟</p>
         </div>
       </div>
@@ -346,12 +348,20 @@
     ]
   };
 
+  
   var words = {
     type: jsPsychSurveyText,
     questions: [
-      { prompt: 'word(s) 1', columns: 20, required: false, placeholder: 'word 1', name: 'word1' },
-      { prompt: 'word(s) 2', columns: 20, required: false, placeholder: 'word 2', name: 'word2' },
-      { prompt: 'word(s) 3', columns: 20, required: false, placeholder: 'word 3', name: 'word3' }
+      { prompt: '', columns: 20, required: false, placeholder: 'word 1', name: 'word1' },
+      { prompt: '', columns: 20, required: false, placeholder: 'description 1', name: 'desc1' },
+      { prompt: '', columns: 20, required: false, placeholder: 'word 2', name: 'word2' },
+      { prompt: '', columns: 20, required: false, placeholder: 'description 2', name: 'desc2' },
+      { prompt: '', columns: 20, required: false, placeholder: 'word 3', name: 'word3' },
+      { prompt: '', columns: 20, required: false, placeholder: 'description 3', name: 'desc3' },
+      { prompt: '', columns: 20, required: false, placeholder: 'word 4', name: 'word4' },
+      { prompt: '', columns: 20, required: false, placeholder: 'description 4', name: 'desc4' },
+      { prompt: '', columns: 20, required: false, placeholder: 'word 5', name: 'word5' },
+      { prompt: '', columns: 20, required: false, placeholder: 'description 5', name: 'desc5' }
     ],
     randomize_question_order: false,
     conditional_function: function () {
@@ -366,7 +376,8 @@
       delete trial.stimulus;
       delete trial.trial_type;
     },
-  };
+};
+
 
   var fixation_cross = {
     type: jsPsychImageKeyboardResponse,

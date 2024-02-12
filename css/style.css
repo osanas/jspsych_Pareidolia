@@ -70,3 +70,20 @@ select {
 	line-height: normal;
 	height: auto;
 }
+
+/* New CSS for two-column layout */
+.two-column-layout .jspsych-survey-text-question {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.two-column-layout .jspsych-survey-text-question > div {
+    flex-basis: 48%; /* Adjust this value to control the width of each column */
+}
+
+/* Ensure that the input fields take full width of their container */
+.two-column-layout .jspsych-survey-text-question input[type="text"] {
+    width: 100%;
+    box-sizing: border-box; /* Ensures padding does not affect overall width */
+}
