@@ -59,10 +59,10 @@
 
   // GUID
   function getGUID() {
-  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
-    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-  );
-}
+    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+  }
 
 
 
@@ -348,8 +348,127 @@
     ]
   };
 
-  
+  var word1 = "";
+  var word2 = "";
+  var word3 = "";
+  var word4 = "";
+  var word5 = "";
+  var description1 = "";
+  var description2 = "";
+  var description3 = "";
+  var description4 = "";
+  var description5 = "";
   var words = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `
+    <div style="max-width:600px;">    
+      <div class="row" style="text-align: left;">
+        <div class="col" style="padding:5px 15px">
+          <p>Single Words</label>
+        </div>
+        <div class="col" style="padding:5px 15px">
+          <p>Descriptions (facultative)</label>
+        </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <input type="text" id="word1" name="word1" data-name="word1" size="20" autofocus="" placeholder="word 1">
+          </div>
+          <div class="col">
+            <input type="text" id="description1" name="description1" class="full" autofocus="" placeholder="description 1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <input type="text" id="word2" name="word2" data-name="word2" size="20" autofocus="" placeholder="word 2">
+          </div>
+          <div class="col">
+            <input type="text" id="description2" name="description2" class="full" autofocus="" placeholder="description 2">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <input type="text" id="word3" name="word3" data-name="word3" size="20" autofocus="" placeholder="word 3">
+          </div>
+          <div class="col">
+            <input type="text" id="description3" name="description3" class="full" autofocus="" placeholder="description 3">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <input type="text" id="word4" name="word4" data-name="word4" size="20" autofocus="" placeholder="word 4">
+          </div>
+          <div class="col">
+            <input type="text" id="description4" name="description4" class="full" autofocus="" placeholder="description 4">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <input type="text" id="word5" name="word5" data-name="word1" size="20" autofocus="" placeholder="word 5">
+          </div>
+          <div class="col">
+            <input type="text" id="description5" name="description5" class="full" autofocus="" placeholder="description 5">
+          </div>
+        </div>
+    </div>
+    `,
+    choices: ['Continue'],
+    button_html: '<button class="jspsych-btn" id="continueButton_words">%choice%</button>',
+    conditional_function: function () {
+      var last_trial_data = jsPsych.data.getLastTrialData().values()[0];
+      return last_trial_data.key_press !== null;  // Only display the text boxes if the space bar was pressed in the last trial
+    },
+    post_trial_gap: 100,
+    on_load: function () {
+      function safeGetValue(id) {
+        const element = document.getElementById(id);
+        return element ? element.value : '';
+      }
+      function enableIfCompleted() {
+        _word1= safeGetValue('word1');
+        _word2= safeGetValue('word2');
+        _word3= safeGetValue('word3');
+        _word4= safeGetValue('word4');
+        _word5= safeGetValue('word5');
+        _description1= safeGetValue('description1');
+        _description2= safeGetValue('description2');
+        _description3= safeGetValue('description3');
+        _description4= safeGetValue('description4');
+        _description5= safeGetValue('description5');
+      }
+      document.getElementById('word1').addEventListener('input', enableIfCompleted);
+      document.getElementById('word2').addEventListener('input', enableIfCompleted);
+      document.getElementById('word3').addEventListener('change', enableIfCompleted);
+      document.getElementById('word4').addEventListener('change', enableIfCompleted);
+      document.getElementById('word5').addEventListener('change', enableIfCompleted);
+      document.getElementById('description1').addEventListener('change', enableIfCompleted);
+      document.getElementById('description2').addEventListener('change', enableIfCompleted);
+      document.getElementById('description3').addEventListener('change', enableIfCompleted);
+      document.getElementById('description4').addEventListener('change', enableIfCompleted);
+      document.getElementById('description5').addEventListener('change', enableIfCompleted);
+    },
+    on_finish: function (trial) {
+      // Safely retrieving values from input fields, checking for null
+      trial.data = {
+        word1: _word1,
+        word2: _word2,
+        word3: _word3,
+        word4: _word4,
+        word5: _word5,
+        description1: _description1,
+        description2: _description2,
+        description3: _description3,
+        description4: _description4,
+        description5: _description5
+      };
+      currentTrial++;
+      updateProgressBar();
+      delete trial.stimulus;
+      delete trial.trial_type;
+    }
+  };
+
+  var words_old_version = {
     type: jsPsychSurveyText,
     questions: [
       { prompt: 'Words', columns: 20, required: false, placeholder: 'word 1', name: 'word1' },
@@ -372,11 +491,11 @@
     on_finish: function (trial) {
       currentTrial++;
       updateProgressBar();
-      trial.name = "words";
+      trial.name = "words_old_version";
       delete trial.stimulus;
       delete trial.trial_type;
     },
-};
+  };
 
 
   var fixation_cross = {

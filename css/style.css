@@ -87,3 +87,16 @@ select {
     width: 100%;
     box-sizing: border-box; /* Ensures padding does not affect overall width */
 }
+
+.row {
+	display: flex;
+}
+
+.col {
+	flex: 1;
+	padding: 15px;
+}
+
+.full{
+	width: 100%;
+}
