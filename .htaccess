@@ -1,16 +1,22 @@
+
 # Redirection vers index.php
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
-
     # Redirige toutes les requêtes vers index.php sauf pour les fichiers existants
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.php [L]
 </IfModule>
 
+<IfModule mod_headers.c>
+  Header set Cache-Control "no-cache, no-store, must-revalidate"
+  Header set Pragma "no-cache"
+  Header set Expires 0
+</IfModule>
+
 # Protection du fichier db_config.php
-<Files "db_config.php">
+<Files "appconfig.php">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>
@@ -18,3 +24,12 @@
         Deny from all
     </IfModule>
 </Files>
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php83” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php83___lsphp .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
+
+

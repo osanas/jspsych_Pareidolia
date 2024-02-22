@@ -100,3 +100,9 @@ select {
 .full{
 	width: 100%;
 }
+
+.label-intro {
+    display: inline-block;
+    font-size: 15px;
+    width: 175px !important;
+}
