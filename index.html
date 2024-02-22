@@ -90,9 +90,9 @@
         <h3 style="margin-bottom: 20px;">By participating, you agree to the following:</h3>
         
         <ul style="margin-bottom: 20px;text-align: left;max-width: 627px;">
-          <li style="margin-bottom: 10px;">The data collected will be used exclusively for academic and research purposes.</li>
-          <li style="margin-bottom: 10px;">Your data will be anonymized and won't be associated with any personal identifiers.</li>
-          <li style="margin-bottom: 10px;">The experiment consists of 2 short tasks. The first involves looking at ambiguous images. The second consist in providing semantically distant words. Full description of the tasks will be provided later.</li>
+          <li style="margin-bottom: 10px;">The data collected will be used exclusively for <b>academic and research purposes</b>.</li>
+          <li style="margin-bottom: 10px;">Your <b>data will be anonymized</b> and won't be associated with any personal identifiers.</li>
+          <li style="margin-bottom: 10px;">The experiment consists of <b>2 short tasks</b>. The first involves looking at ambiguous images ( ≈ 8min). The second consist in providing semantically <br/>distant words ( ≈ 3min). Full description of the tasks will be provided later.</li>
           <li>You can terminate your participation at any time.</li></br>
         </ul>
         
@@ -116,10 +116,7 @@
               <label for="ageInput" class="label-intro">Age</label>
               <input type="number" id="ageInput" name="age" min="1" required><br><br>
 
-              <label for="nationalityInput" class="label-intro">Nationality</label>
-              <input type="text" id="nationalityInput" name="nationality" placeholder="e.g. American" required><br><br>
-
-              <label for="languageSelect" class="label-intro">My native language is</label>
+              <label for="languageSelect" class="label-intro">Native language</label>
               <select id="languageSelect" name="my native language is">
                   <option value="English">English</option>
                   <option value="Spanish">Spanish</option>
@@ -156,16 +153,14 @@
     on_load: function () {
       function enableIfCompleted() {
         ageVal = document.getElementById('ageInput').value;
-        nationalityVal = document.getElementById('nationalityInput').value;
         selectedLanguage = document.getElementById('languageSelect').value;
 
-        if (ageVal && nationalityVal && selectedLanguage) {
+        if (ageVal && selectedLanguage) {
           document.getElementById('continueButton').disabled = false;
         }
       }
 
       document.getElementById('ageInput').addEventListener('input', enableIfCompleted);
-      document.getElementById('nationalityInput').addEventListener('input', enableIfCompleted);
       document.getElementById('languageSelect').addEventListener('change', enableIfCompleted);
     },
     on_finish: function (trial) {
@@ -173,7 +168,6 @@
       trial.data = ({
         userID: getGUID(),
         age: ageVal,
-        nationality: nationalityVal,
         primary_language: selectedLanguage
       });
       delete trial.stimulus;
@@ -190,12 +184,13 @@
     <h2>👀 Ready for some eye-tracking fun in our game? 👀</h2>
     <p>We'll use your webcam to track your eye movements</p>
     <p>helping us understand how you play.</p>
-    <h3>Don't worry, we're only interested in your eye movements </h3>
-    <p>No images or videos will be recorded.</p></br></br>
+    <h3>We will only measure your eye movements</h3>
+    <p>No images nor videos will be recorded.</p>
+    <p>📲 If you are on a mobile device, select skip. 📲</p></br></br>
   
 
       `,
-    choices: ['Let\'s Go', 'I will Pass'],
+    choices: ['Let\'s Go', 'Skip'],
     post_trial_gap: 1000,
     on_finish: function (trial) {
       trial.name = "camera_request";
@@ -275,7 +270,7 @@
     type: jsPsychHtmlButtonResponse,
     stimulus: `
     <div>
-      <h1>🔍 Pareidolia Game 🔍</h1></br></br>
+      <h1>🔍 Part 1 : Pareidolia Game 🔍</h1></br></br>
       <div style="display: flex;">
         <div style="max-width: 327px;margin-right: 30px;width: 47%;"> 
           <img src="./images/example.png" alt="Descriptive Text" style="width: 100%;">
@@ -285,8 +280,8 @@
           <p>Try to find hidden shapes or objects in these images!</p>
           <p>When you detect the first percept, <b>press the space bar</b> (nothing will happen, it's normal!).</p>
           <p>Then, describe each percept you found using <b>one word per percept</b>.</p>
-          <p>If the single word doesn't capture well what you've seen, you can add a <b>facultative description</b>.</p>
-          <p>For example, you can say: <b>"Dog"</b> for the single word and <b>"Angry dog with three ears"</b> in the description.</p>
+          <p>If the single word doesn't capture well what you've seen, you can add a <b>optional description</b>.</p>
+          <p>For example, you can say: <b>"Dog"</b> for the single word and <b>"Angry dog with three ears"</b> in the optional description.</p>
           <p>You can write the words and description in your <b>native language<b>.</p>
           <p>Let's see what you discover! 🌟</p>
         </div>
@@ -363,7 +358,7 @@
           <p style="font-size:15px">Single Words</label>
         </div>
         <div class="col" style="padding:5px 15px">
-          <p style="font-size:15px">Descriptions (facultative)</label>
+          <p style="font-size:15px">Descriptions (optional)</label>
         </div>
         </div>
         <div class="row">
@@ -479,7 +474,7 @@
     type: jsPsychSurveyText,
     questions: [
       { prompt: 'Words', columns: 20, required: false, placeholder: 'word 1', name: 'word1' },
-      { prompt: 'Descriptions (facultative)', columns: 20, required: false, placeholder: 'description 1', name: 'desc1' },
+      { prompt: 'Descriptions (optional)', columns: 20, required: false, placeholder: 'description 1', name: 'desc1' },
       { prompt: '', columns: 20, required: false, placeholder: 'word 2', name: 'word2' },
       { prompt: '', columns: 20, required: false, placeholder: 'description 2', name: 'desc2' },
       { prompt: '', columns: 20, required: false, placeholder: 'word 3', name: 'word3' },
@@ -542,7 +537,7 @@
     type: jsPsychHtmlButtonResponse,
     stimulus: `
     <div>
-      <h1>Divergent Association Task</h1>
+      <h1>Part 2 : Divergent Association Task</h1>
       <p>Please enter <b>10 words</b> that are as different from each other as possible, in all meanings and uses of the words.</p>
       <div style="text-align: left; margin: auto; max-width: 493px;">
         <h2>📜 Rules</h2>
@@ -614,7 +609,7 @@
     <div style="text-align: center; max-width: 700px; margin: auto; padding: 20px;">
       <h1>Thank You for Participating!</h1>
       <p>For more information and insights, you can <b>read our paper:<b></p>
-      <p><a href="https://pubmed.ncbi.nlm.nih.gov/36164655/" target="_blank">Pareidolia and Creativity</a></p>
+      <p><a href="https://www.cell.com/iscience/pdf/S2589-0042(22)01375-X.pdf" target="_blank">Pareidolia and Creativity</a></p>
     </div>
   `,
     choices: ['Exit'],
