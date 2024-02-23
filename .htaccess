@@ -1,3 +1,6 @@
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Redirection vers index.php
 <IfModule mod_rewrite.c>
@@ -31,5 +34,3 @@
   AddHandler application/x-httpd-ea-php83___lsphp .php .php8 .phtml
 </IfModule>
 # php -- END cPanel-generated handler, do not edit
-
-

@@ -51,7 +51,7 @@
   const fd14Images = get_random_images_from_folder('14', 10);
   const fd16Images = get_random_images_from_folder('16', 10);
 
-  var _totalTrials = 2; // Set this to the total number of trials in your experiment
+  var _totalTrials = 1; // Set this to the total number of trials in your experiment
   var _trialDuration = 10000; // Set this to the total number of trials in your experiment
   var currentTrial = 0;
 
@@ -172,7 +172,8 @@
         userID: userID,
         age: ageVal,
         primary_language: selectedLanguage,
-        project_code: project_code
+        project_code: project_code,
+        client_datetime: (new Date()).toLocaleString(),
       });
       delete trial.stimulus;
       delete trial.trial_type;
@@ -734,18 +735,17 @@
     choices: ['Exit'],
     post_trial_gap: 1000,
     on_finish: function (trial) {
-      trial.name = "thank_you_screen";
-      delete trial.stimulus;
-      delete trial.trial_type;
       if (trial.response == 0) {
         window.close();
       }
+      // trial.name = "thank_you_screen";
+      // delete trial.stimulus;
+      // delete trial.trial_type;      
     },
   };
 
   // --------------- API + functions ---------------
   function post_sample_data(data) {
-    console.log('post_sample_data', data);
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -755,7 +755,7 @@
     };
     const url = 'api_post.php';
     fetch(url, requestOptions)
-      .then(response => response.json())
+      .then(response => console.log('done!'))
       .then(data => {
         console.log('result', data);
       })
@@ -775,7 +775,7 @@
     };
     const url = 'api_post_feedback.php';
     fetch(url, requestOptions)
-      .then(response => response.json())
+      .then(response => console.log('done!'))
       .then(data => {
         console.log('result', data);
       })
@@ -818,7 +818,8 @@
   var jsPsych = initJsPsych({
     display_element: 'jspsych-experiment-container',
     on_finish: function () {
-      jsPsych.data.displayData();
+      window.close();
+      // jsPsych.data.displayData();
     },
     extensions: [
       { type: jsPsychExtensionWebgazer, params: { showGazeDot: false } }

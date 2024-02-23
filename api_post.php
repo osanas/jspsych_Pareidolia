@@ -73,6 +73,7 @@ try {
     $primary_language = "NA";
     $project_code = "NA";
     $feedback = "NA";
+    $dateCreation = "NA";
     foreach ($decodedData['trials'] as $trial) {
         if (isset($trial['name']) && $trial['name'] === 'demographic') {
             if (isset($trial['data'])) {
@@ -82,6 +83,7 @@ try {
                 $primary_language = isset($demographicData['primary_language']) ? $demographicData['primary_language'] : $primary_language;
                 $project_code = isset($demographicData['project_code']) ? $demographicData['project_code'] : $project_code;
                 $feedback = "yo";
+                $dateCreation = isset($demographicData['client_datetime']) ? date("Y-m-d H:i:s",strtotime($demographicData['client_datetime'])) : $dateCreation;
                 break;
             }
         }
