@@ -1,7 +1,7 @@
 <?php
 
 // Use an external configuration file for database credentials
-require_once 'db_config.php'; // Ensure this file is properly secured
+require_once 'appconfig.php'; // Ensure this file is properly secured
 
 // Enable error reporting for mysqli in exception mode
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -40,11 +40,9 @@ try {
         if (!isset($trial['name']) || !is_string($trial['name'])) {
             return "Erreur : 'name' manquant ou non chaîne.";
         }
-
         if (isset($trial['url_stimulus']) && !filter_var($trial['url_stimulus'], FILTER_VALIDATE_URL)) {
             return "Erreur : 'url_stimulus' non valide.";
         }
-
         if (isset($trial['data']) && is_array($trial['data'])) {
             if (!isset($trial['data']['userID']) || !is_string($trial['data']['userID'])) {
                 return "Erreur : 'userID' dans 'data' manquant ou non chaîne.";
@@ -55,49 +53,48 @@ try {
             // ... autres validations pour 'data'
         }
 
-       // add validation words ----------- TODO
+        // add validation words ----------- TODO
         return "valid"; // Tout est valide
     }
 
     //foreach ($decodedData as $trial) {
-      //  $result = validateTrial($trial);
-        //if ($result !== "valid") {
-          //  die($result);
-        //}
+    //  $result = validateTrial($trial);
+    //if ($result !== "valid") {
+    //  die($result);
+    //}
     //}
 
     $ip = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
     $userAgent = filter_var($_SERVER['HTTP_USER_AGENT'], FILTER_SANITIZE_STRING);
     $dateCreation = date('Y-m-d H:i:s');
 
-    $userID = "1";
-    $age = "";
-    $nationality = "";
-    $primary_language = "";
-
-    foreach ($decodedData as $trial) {
+    $userID = "NA";
+    $age = "NA";
+    $primary_language = "NA";
+    $project_code = "NA";
+    $feedback = "NA";
+    foreach ($decodedData['trials'] as $trial) {
         if (isset($trial['name']) && $trial['name'] === 'demographic') {
             if (isset($trial['data'])) {
                 $demographicData = $trial['data'];
-                
                 $userID = isset($demographicData['userID']) ? $demographicData['userID'] : $userID;
                 $age = isset($demographicData['age']) ? $demographicData['age'] : $age;
-                $nationality = isset($demographicData['nationality']) ? $demographicData['nationality'] : $nationality;
                 $primary_language = isset($demographicData['primary_language']) ? $demographicData['primary_language'] : $primary_language;
-
-                // Arrêter la boucle une fois les données démographiques trouvées
+                $project_code = isset($demographicData['project_code']) ? $demographicData['project_code'] : $project_code;
+                $feedback = "yo";
                 break;
             }
         }
     }
-    
 
     // Préparation de la requête SQL
-    $sql = "INSERT INTO logs (ip, user_agent, date_creation, data_json, user_id, age, nationality, primary_language) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO logs (date_creation, ip, user_id, age, project_code, primary_language, user_agent, data_json, feedback) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    // $sql = "INSERT INTO logs (ip, user_agent, date_creation, data_json, user_id, age, project_code, primary_language) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $mysqli->prepare($sql);
 
     // Liaison des paramètres
-    $stmt->bind_param("ssssssss", $ip, $userAgent, $dateCreation, $dataJson, $userID, $age, $nationality, $primary_language);
+    $stmt->bind_param("sssssssss", $dateCreation, $ip, $userID, $age, $project_code, $primary_language, $userAgent, $dataJson, $feedback);
+    // $stmt->bind_param("ssssssss", $ip, $userAgent, $dateCreation, $dataJson, $userID, $age, $project_code, $primary_language);
 
     // Exécution de la requête
     $stmt->execute();

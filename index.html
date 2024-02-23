@@ -22,7 +22,6 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
-
 <body>
   <div id="progressBarContainer">
     <div id="progressBar" style="width: 0%;"></div>
@@ -33,10 +32,10 @@
 </body>
 
 <script>
-
   let ageVal = null;
-  let nationalityVal = null;
   let selectedLanguage = null;
+  let project_code = null;
+  let userID = getGUID();
   let useEyeTracking = false;
   let _word1 = "";
   let _word2 = "";
@@ -52,20 +51,12 @@
   const fd14Images = get_random_images_from_folder('14', 10);
   const fd16Images = get_random_images_from_folder('16', 10);
 
-  //ProgressBar
   var _totalTrials = 2; // Set this to the total number of trials in your experiment
   var _trialDuration = 10000; // Set this to the total number of trials in your experiment
   var currentTrial = 0;
 
   const image_list = [...fd12Images, ...fd14Images, ...fd16Images];
   shuffleArray(image_list);
-
-  // --------------- Start ---------------
-  function updateProgressBar() {
-    var width = (currentTrial / _totalTrials) * 100;
-    $("#progressBar").css('width', width + '%');
-  }
-  updateProgressBar(); // Initialize progress bar
 
   // GUID
   function getGUID() {
@@ -74,10 +65,19 @@
     );
   }
 
+  // ProgressBar
+  function updateProgressBar() {
+    var width = (currentTrial / _totalTrials) * 100;
+    $("#progressBar").css('width', width + '%');
+  }
+  updateProgressBar(); // Initialize progress bar
+
   var fullscreen = {
     type: jsPsychFullscreen,
     fullscreen_mode: true
   };
+
+  // ---------- Sequences ----------
 
   var research_info = {
     type: jsPsychHtmlButtonResponse,
@@ -142,7 +142,7 @@
               </select><br><br>
               <div>
                 <label for="codenameInput" class="label-intro">Code (if applicable)</label>
-                <input type="text" id="codenameInput" name="codename" placeholder="project X" required><br><br><br>
+                <input type="text" id="project_code" name="project_code" placeholder="project X" required><br><br><br>
               </div>
               <br><br>
           </div>
@@ -154,21 +154,23 @@
       function enableIfCompleted() {
         ageVal = document.getElementById('ageInput').value;
         selectedLanguage = document.getElementById('languageSelect').value;
+        project_code = document.getElementById('project_code').value;
 
         if (ageVal && selectedLanguage) {
           document.getElementById('continueButton').disabled = false;
         }
       }
-
-      document.getElementById('ageInput').addEventListener('input', enableIfCompleted);
+      document.getElementById('ageInput').addEventListener('change', enableIfCompleted);
       document.getElementById('languageSelect').addEventListener('change', enableIfCompleted);
+      document.getElementById('project_code').addEventListener('change', enableIfCompleted);
     },
     on_finish: function (trial) {
       trial.name = "demographic";
       trial.data = ({
-        userID: getGUID(),
+        userID: userID,
         age: ageVal,
-        primary_language: selectedLanguage
+        primary_language: selectedLanguage,
+        project_code: project_code
       });
       delete trial.stimulus;
       delete trial.trial_type;
@@ -196,6 +198,12 @@
       trial.name = "camera_request";
       delete trial.stimulus;
       delete trial.trial_type;
+      if (trial.response === 0) {
+        useEyeTracking = true;
+      }
+      else {
+        useEyeTracking = false;
+      }
     }
   };
 
@@ -333,8 +341,8 @@
     on_start: function (trial) {
       trial.data = { onset_time: jsPsych.getTotalTime() };
     },
-    on_finish: function (data) {
-      data.offset_time = jsPsych.getTotalTime();
+    on_finish: function (trial) {
+      trial.offset_time = jsPsych.getTotalTime();
       trial.name = "experiment_eye_tracking";
       trial.url_stimulus = _url_stimulus;
       delete trial.stimulus;
@@ -438,8 +446,8 @@
         _description4 = safeGetValue('description4');
         _description5 = safeGetValue('description5');
       }
-      document.getElementById('word1').addEventListener('input', enableIfCompleted);
-      document.getElementById('word2').addEventListener('input', enableIfCompleted);
+      document.getElementById('word1').addEventListener('change', enableIfCompleted);
+      document.getElementById('word2').addEventListener('change', enableIfCompleted);
       document.getElementById('word3').addEventListener('change', enableIfCompleted);
       document.getElementById('word4').addEventListener('change', enableIfCompleted);
       document.getElementById('word5').addEventListener('change', enableIfCompleted);
@@ -469,36 +477,6 @@
       delete trial.trial_type;
     }
   };
-
-  var words_old_version = {
-    type: jsPsychSurveyText,
-    questions: [
-      { prompt: 'Words', columns: 20, required: false, placeholder: 'word 1', name: 'word1' },
-      { prompt: 'Descriptions (optional)', columns: 20, required: false, placeholder: 'description 1', name: 'desc1' },
-      { prompt: '', columns: 20, required: false, placeholder: 'word 2', name: 'word2' },
-      { prompt: '', columns: 20, required: false, placeholder: 'description 2', name: 'desc2' },
-      { prompt: '', columns: 20, required: false, placeholder: 'word 3', name: 'word3' },
-      { prompt: '', columns: 20, required: false, placeholder: 'description 3', name: 'desc3' },
-      { prompt: '', columns: 20, required: false, placeholder: 'word 4', name: 'word4' },
-      { prompt: '', columns: 20, required: false, placeholder: 'description 4', name: 'desc4' },
-      { prompt: '', columns: 20, required: false, placeholder: 'word 5', name: 'word5' },
-      { prompt: '', columns: 20, required: false, placeholder: 'description 5', name: 'desc5' }
-    ],
-    randomize_question_order: false,
-    conditional_function: function () {
-      var last_trial_data = jsPsych.data.getLastTrialData().values()[0];
-      return last_trial_data.key_press !== null;  // Only display the text boxes if the space bar was pressed in the last trial
-    },
-    post_trial_gap: 100,
-    on_finish: function (trial) {
-      currentTrial++;
-      updateProgressBar();
-      trial.name = "words_old_version";
-      delete trial.stimulus;
-      delete trial.trial_type;
-    },
-  };
-
 
   var fixation_cross = {
     type: jsPsychImageKeyboardResponse,
@@ -587,19 +565,156 @@
     },
   };
 
-  var done = {
+  // var done = {
+  //   type: jsPsychHtmlButtonResponse,
+  //   choices: ['CSV', 'JSON'],
+  //   stimulus: `<p>Done!</p><p>If you'd like to download a copy of the data to explore, click the format you'd like below</p>`,
+  //   on_finish: function (data) {
+  //     var all_data = jsPsych.data.get();
+  //     post_sample_data(all_data);
+  //     if (data.response == 0) {
+  //       jsPsych.data.get().localSave('csv', 'webgazer-sample-data.csv');
+  //     }
+  //     if (data.response == 1) {
+  //       jsPsych.data.get().localSave('json', 'webgazer-sample-data.json');
+  //     }
+  //   }
+  // };
+  var _data_feedback = {
+    userID: userID,
+    experienceRating: null,
+    firstTime: null,
+    timesTaken: null,
+    substanceUse: null,
+    substanceSpecify: null,
+    generalComments: null
+  };
+
+  var experienceQuestions = {
     type: jsPsychHtmlButtonResponse,
-    choices: ['CSV', 'JSON'],
-    stimulus: `<p>Done!</p><p>If you'd like to download a copy of the data to explore, click the format you'd like below</p>`,
-    on_finish: function (data) {
-      var all_data = jsPsych.data.get();
-      post_sample_data(all_data);
-      if (data.response == 0) {
-        jsPsych.data.get().localSave('csv', 'webgazer-sample-data.csv');
+    stimulus: `
+        <style>
+            .question { margin-bottom: 15px; }
+            .question label { display: block; margin-top: 5px; }
+            .conditional { display: none; margin-left: 20px; margin-top: 5px; }
+            .rating-group {
+                display: flex;
+                justify-content: flex-start;
+                flex-wrap: nowrap;
+            }
+            .rating-group label {
+                margin-right: 10px; /* Adjust spacing between each radio button */
+            }
+            .rating-group input[type="radio"] {
+                margin-right: 5px;
+            }
+            .radio-inline { display: inline-block; }
+            .question input[type="number"], .question textarea, .conditional input {
+                width: 100%;
+                box-sizing: border-box; /* Makes sure the width includes padding and border */
+            }
+        </style>
+        <div style="max-width:600px;">
+            <h3>Follow-up questions (all optional)</h3>
+            <div style="margin-bottom: 20px; text-align: left;">
+                
+                <div class="question">
+                    <label>How did you find the experience (1 to 10)</label>
+                    <div class="rating-group">
+                        ${Array.from({ length: 10 }, (_, i) => `
+                            <label>
+                                <input type="radio" name="experienceRating" value="${i + 1}">
+                                ${i + 1}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label>Is this the first time you took the test?</label>
+                    <label class="radio-inline">
+                        <input type="radio" id="firstTimeYes" name="firstTime" value="Yes">
+                        Yes
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" id="firstTimeNo" name="firstTime" value="No">
+                        No
+                    </label>
+                </div>
+                <div class="conditional" id="timesTakenQuestion">
+                    <label for="timesTaken">how many times in total.</label>
+                    <input type="number" id="timesTaken" name="timesTaken" min="0">
+                </div>
+
+                <div class="question">
+                    <label>Were you under the effect of any psychoactive substances?</label>
+                    <label class="radio-inline">
+                        <input type="radio" id="substanceYes" name="substanceUse" value="Yes">
+                        Yes
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" id="substanceNo" name="substanceUse" value="No">
+                        No
+                    </label>
+                </div>
+                <div class="conditional" id="substanceSpecifyQuestion">
+                    <label for="substanceSpecify">specify:</label>
+                    <input type="text" id="substanceSpecify" name="substanceSpecify">
+                </div>
+
+                <div class="question">
+                    <label for="generalComments">General Comments:</label>
+                    <textarea id="generalComments" name="generalComments" rows="4" cols="50"></textarea>
+                </div>
+
+            </div>
+        </div>
+    `,
+    choices: ['Submit'],
+    button_html: '<button class="jspsych-btn" id="submitButton">%choice%</button>',
+    on_load: function () {
+      // Add event listeners for the Yes/No questions to toggle the conditional questions
+      document.getElementById('firstTimeNo').addEventListener('change', function () {
+        document.getElementById('timesTakenQuestion').style.display = 'block';
+      });
+      document.getElementById('firstTimeYes').addEventListener('change', function () {
+        document.getElementById('timesTakenQuestion').style.display = 'none';
+      });
+
+      document.getElementById('substanceYes').addEventListener('change', function () {
+        document.getElementById('substanceSpecifyQuestion').style.display = 'block';
+      });
+      document.getElementById('substanceNo').addEventListener('change', function () {
+        document.getElementById('substanceSpecifyQuestion').style.display = 'none';
+      });
+
+      function enableIfCompleted() {
+        _data_feedback = {
+          userID: userID,
+          experienceRating: document.querySelector('input[name="experienceRating"]:checked') ? document.querySelector('input[name="experienceRating"]:checked').value : '',
+          firstTime: document.querySelector('input[name="firstTime"]:checked') ? document.querySelector('input[name="firstTime"]:checked').value : '',
+          timesTaken: document.getElementById('timesTaken') ? document.getElementById('timesTaken').value : 0,
+          substanceUse: document.querySelector('input[name="substanceUse"]:checked') ? document.querySelector('input[name="substanceUse"]:checked').value : '',
+          substanceSpecify: document.getElementById('substanceSpecify') ? document.getElementById('substanceSpecify').value : '',
+          generalComments: document.getElementById('generalComments') ? document.getElementById('generalComments').value : ''
+        };
       }
-      if (data.response == 1) {
-        jsPsych.data.get().localSave('json', 'webgazer-sample-data.json');
-      }
+      // Ajouter un écouteur sur le document, puis vérifier si l'élément modifié correspond à ce que vous cherchez.
+      document.addEventListener('change', function (event) {
+        var target = event.target;
+        if (target.name === 'experienceRating' || target.name === 'firstTime' || target.name === 'substanceUse') {
+          enableIfCompleted();
+        }
+      });
+      // Pour les éléments qui ne sont pas des boutons radio ou des cases à cocher, vous pouvez les laisser tels quels.
+      document.getElementById('timesTaken').addEventListener('change', enableIfCompleted);
+      document.getElementById('substanceSpecify').addEventListener('change', enableIfCompleted);
+      document.getElementById('generalComments').addEventListener('change', enableIfCompleted);
+    }, on_finish: function (trial) {
+      trial.name = "experienceFeedback";
+      post_feedback(_data_feedback);
+      delete trial.stimulus;
+      delete trial.trial_type;
     }
   };
 
@@ -619,32 +734,50 @@
       delete trial.stimulus;
       delete trial.trial_type;
       if (trial.response == 0) {
-        alert('let\'s gooooo!');
+        window.close();
       }
     },
   };
 
   // --------------- API + functions ---------------
-
   function post_sample_data(data) {
-    console.log('result', data);
+    console.log('post_sample_data', data);
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    };
+    const url = 'api_post.php';
+    fetch(url, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log('result', data);
+      })
+      .catch(error => {
+        console.log('error', error);
+      });
+  }
 
-    // const requestOptions = {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(data),
-    // };
-    // const url = 'api_post.php';
-    // fetch(url, requestOptions)
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     console.log('result', data);
-    //   })
-    //   .catch(error => {
-    //     console.log('error', error);
-    //   });
+  function post_feedback(data) {
+    console.log('post_feedback', data);
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    };
+    const url = 'api_post_feedback.php';
+    fetch(url, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log('result', data);
+      })
+      .catch(error => {
+        console.log('error', error);
+      });
   }
 
   function get_sample_image() {
@@ -732,8 +865,6 @@
     }
   }
 
-
-
   var after_if_trial = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: 'Pareidolie'
@@ -750,6 +881,7 @@
   // --------------------------------------------
   timeline.push(DAT_instructions);
   timeline.push(DAT_test);
+  timeline.push(experienceQuestions);
   timeline.push(thankYouScreen);
 
 
