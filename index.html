@@ -15,7 +15,7 @@
   <script src="dist/plugin-webgazer-init-camera.js"></script>
   <script src="dist/plugin-webgazer-calibrate.js"></script>
   <script src="dist/plugin-webgazer-validate.js"></script>
-  <script src="js/webgazer/webgazer.js"></script>
+  <script src="js/webgazer/webgazer_last.js"></script>
   <script src="dist/extension-webgazer.js"></script>
   <link rel="stylesheet" href="dist/jspsych.css">
   <link rel="stylesheet" href="./css/style.css">
@@ -111,7 +111,9 @@
     type: jsPsychHtmlButtonResponse,
     stimulus: `
         <div style="max-width:600px;">
-            <h3>Please answer the following demographic questions:</h3></br>
+            <img src="./images/banner_pareidolia2.png" style="position: absolute; top: 0; left: 0; width:100%;" alt="Pareidolia Game Image">
+
+            <h3 style="margin-top: 200px;">Please answer the following demographic questions:</h3></br>
             <div style="margin-bottom: 20px;text-align: left;">
               <label for="ageInput" class="label-intro">Age</label>
               <input type="number" id="ageInput" name="age" min="1" required><br><br>
@@ -183,7 +185,9 @@
     type: jsPsychHtmlButtonResponse,
     trial_id: 'camera_request',
     stimulus: `
-    <h2>👀 Ready for some eye-tracking fun in our game? 👀</h2>
+    <img src="./images/banner_pareidolia2.png" style="position: absolute; top: 0; left: 0; width:100%;" alt="Pareidolia Game Image">
+
+    <h2 style="margin-top: 200px;">👀 Ready for some eye-tracking fun in our game? 👀</h2>
     <p>We'll use your webcam to track your eye movements</p>
     <p>helping us understand how you play.</p>
     <h3>We will only measure your eye movements</h3>
