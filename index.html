@@ -746,43 +746,53 @@
 
   // --------------- API + functions ---------------
   function post_sample_data(data) {
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    };
-    const url = 'api_post.php';
-    fetch(url, requestOptions)
-      .then(response => console.log('done!'))
-      .then(data => {
-        console.log('result', data);
-      })
-      .catch(error => {
-        console.log('error', error);
-      });
-  }
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  };
+  const url = 'https://durable-object-starter.antoine-bellemare9.workers.dev/api/post'; // Replace with your Worker API URL
+  fetch(url, requestOptions)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('Data successfully sent:', data);
+    })
+    .catch((error) => {
+      console.error('Error sending data to the Worker:', error);
+    });
+}
 
-  function post_feedback(data) {
-    console.log('post_feedback', data);
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    };
-    const url = 'api_post_feedback.php';
-    fetch(url, requestOptions)
-      .then(response => console.log('done!'))
-      .then(data => {
-        console.log('result', data);
-      })
-      .catch(error => {
-        console.log('error', error);
-      });
-  }
+function post_feedback(data) {
+  console.log('Sending feedback data to Worker:', data);
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  };
+  const url = 'https://durable-object-starter.antoine-bellemare9.workers.dev/api/feedback'; // Replace with your Worker API URL
+  fetch(url, requestOptions)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('Feedback successfully sent:', data);
+    })
+    .catch((error) => {
+      console.error('Error sending feedback to the Worker:', error);
+    });
+}
 
   function get_sample_image() {
     var randomIndex = Math.floor(Math.random() * image_list.length);
