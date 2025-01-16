@@ -748,10 +748,10 @@
   const urlParams = new URLSearchParams(window.location.search);
   const refDatScore = urlParams.get('score');
   const refDatWords = urlParams.get('words') ? urlParams.get('words').split(',') : [];
-  
+  console.log(refDatScore);
   function post_sample_data(data) {
-  if (refDatScore) {
-    data.ref_dat_score = refDatScore;
+    if (refDatScore) {
+    data.ref_dat_score = parseFloat(refDatScore); // Convert score to a number
   }
   if (refDatWords.length > 0) {
     data.ref_dat_words = refDatWords;
