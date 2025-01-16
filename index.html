@@ -745,22 +745,16 @@
   };
 
   // --------------- API + functions ---------------
-  // Extract parameters from URL
   const urlParams = new URLSearchParams(window.location.search);
-  const refDatScore = urlParams.get('score'); // Extract 'score' parameter
-  const refDatWords = urlParams.get('words') ? urlParams.get('words').split(',') : []; // Extract 'words' and split into an array
-
-  console.log('Ref Data Score:', refDatScore);
-  console.log('Ref Data Words:', refDatWords);
-  
+  const refDatScore = urlParams.get('score');
+  const refDatWords = urlParams.get('words') ? urlParams.get('words').split(',') : [];
   
   function post_sample_data(data) {
-  // Add refDatScore and refDatWords to the data object
   if (refDatScore) {
-    data.ref_dat_score = refDatScore; // Add score to the payload
+    data.ref_dat_score = refDatScore;
   }
   if (refDatWords.length > 0) {
-    data.ref_dat_words = refDatWords; // Add words to the payload
+    data.ref_dat_words = refDatWords;
   }
 
   const requestOptions = {
@@ -771,7 +765,7 @@
     body: JSON.stringify(data),
   };
 
-  const url = 'https://durable-object-starter.antoine-bellemare9.workers.dev/api/post'; // Replace with your Worker API URL
+  const url = 'https://durable-object-starter.antoine-bellemare9.workers.dev/api/post';
   fetch(url, requestOptions)
     .then((response) => {
       if (!response.ok) {
